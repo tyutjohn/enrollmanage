@@ -7,6 +7,7 @@ var bodyParser = require('body-parser');
 var ejs = require('ejs')
 var index = require('./routes/index');
 var users=require('./routes/users');
+var admin=require('./routes/admin');
 
 var app = express();
 
@@ -23,8 +24,26 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+//拦截未登陆
+app.use((req,res,next)=>{
+  if(req.cookies.userId){
+    next();
+  }else{
+    if(req.originalUrl=='/admin/login'|| req.originalUrl=='/admin/logout'){
+      next();
+    }else{
+      res.json({
+        status:'10001',
+        msg:'当前未登陆',
+        result:''
+      });
+    }
+  }
+});
+
 app.use('/', index);
 app.use('/users',users);
+app.use('/admin',admin);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {
