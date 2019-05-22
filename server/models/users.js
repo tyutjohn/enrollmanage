@@ -9,13 +9,14 @@ var produtSchema=new Schema({
     'major':String,
     'schoolNum':Number,
     'introduce':String,
-    'department':String,
-    'department2':String,
+    'department':Number,
+    'department2':Number,
     'state':Boolean,
     'score':Number,
     'evaluate':String,
     'state2':Boolean,
-    'pass':Boolean
+    'pass':Boolean,
+    'phone':Number
 });
 
 module.exports=mongoose.model('User',produtSchema,'users');

@@ -4,6 +4,7 @@ const Admin=require('./../models/admin');
 const crypto=require('crypto');
 const md5=crypto.createHash('md5');
 
+//管理员个人信息
 router.get('/',(req,res,next)=>{
     Admin.find({},(err,doc)=>{
         if(err){

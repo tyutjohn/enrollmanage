@@ -29,7 +29,7 @@ app.use((req,res,next)=>{
   if(req.cookies.userId){
     next();
   }else{
-    if(req.originalUrl=='/admin/login'|| req.originalUrl=='/admin/logout'){
+    if(req.originalUrl=='/admin/login'|| req.originalUrl=='/admin/logout'|| req.originalUrl=='/users/apply'){
       next();
     }else{
       res.json({
