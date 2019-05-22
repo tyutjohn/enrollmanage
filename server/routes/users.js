@@ -2,7 +2,13 @@ const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
 const Users = require('../models/users');
-
+const Department = require('../models/department');
+const Configs = require('../models/config');
+//阿里云短信
+const SMSClient = require('@alicloud/sms-sdk')
+const accessKeyId = 'LTAIyUpZ2UVjWtk1'//你自己在阿里云后台的accessKeyId
+const secretAccessKey = 'CnYLyTpe1dAl5gL9eCfoPrpkLvPhiA'//secretAccessKey
+var sendmsg = {};
 
 //连接数据库
 mongoose.connect('mongodb://127.0.0.1:27017/enroll');
@@ -15,7 +21,69 @@ mongoose.connection.on('disconnected', function () {
   console.log("MonogDb connected disconnected")
 });
 
-//报名个人信息
+//查询阿里云配置接口
+Configs.find({}, {
+  AccessKeyId: 1,
+  AccessKeySecret: 1
+}, (err, doc) => {
+  if (err) {
+    console.log(err.message)
+  } else {
+    var AccessKeySecret = '',
+      AccessKeyId = '';
+    doc.forEach((item, index) => {
+      AccessKeyId = item.AccessKeyId;
+      AccessKeySecret = item.AccessKeySecret;
+
+    })
+  }
+})
+
+//发送短信
+Users.find({},(err,doc)=>{
+  if(err){
+    console.log(err)
+  }else{
+   doc.forEach((item)=>{
+       //console.log(item.name);
+       console.log(item.phone+',');
+    })
+  }
+})
+router.post('/sendmsg',(req,res,next)=>{
+  sendmsg.send = async (ctx, next) =>{
+    var name=req.body.name,
+    time=req.body.time,
+    phones=req.body.phones;
+    //初始化sms_client
+    let smsClient = new SMSClient({accessKeyId, secretAccessKey})
+    //发送短信
+    var s = await smsClient.sendSMS({
+        PhoneNumbers: phones,//发送的电话号码
+        SignName: '易班招新报名',//认证签名
+        TemplateCode: 'SMS_160625180',//模板id
+        TemplateParam: '{"name":"'+name+'","time":"'+time+'"}'//特别注意，这里的参数名
+    })
+    if(s.Code=="OK"){
+        //ctx.body = {code :1,msg :number};
+        res.json({
+          status:'0',
+          msg:'发送成功',
+          result:''
+        })
+    }else{
+        //ctx.body = {code :0};
+        res.json({
+          status:'1',
+          msg:'发送失败',
+          result:''
+        })
+    }
+  }
+  sendmsg.send();
+});
+
+//全部报名个人信息
 router.get('/', function (req, res, next) {
   Users.find({}, (err, doc) => {
     if (err) {
@@ -35,6 +103,30 @@ router.get('/', function (req, res, next) {
     }
   })
 });
+
+//各个部门报名的信息
+router.get('/classify', (req, res, next) => {
+  const department = req.body.department;
+  Users.find({
+    department: department
+  }, (err, doc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message,
+      })
+    } else {
+      res.json({
+        status: '0',
+        msg: 'suc',
+        result: {
+          count: doc.length,
+          list: doc
+        }
+      })
+    }
+  })
+})
 
 //报名接口
 router.post('/apply', (req, res, next) => {
@@ -150,5 +242,28 @@ router.post('/apply', (req, res, next) => {
     })
   }
 })
+
+//部门信息
+router.get('/departments', (req, res, next) => {
+  Department.find({}, (err, doc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message
+      })
+    } else {
+      res.json({
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc,
+        }
+      })
+    }
+  })
+});
+
+
 
 module.exports = router;

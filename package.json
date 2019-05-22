@@ -13,6 +13,8 @@
     "build": "node build/build.js"
   },
   "dependencies": {
+    "@alicloud/pop-core": "^1.7.7",
+    "@alicloud/sms-sdk": "^1.1.6",
     "axios": "^0.18.0",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.4",
