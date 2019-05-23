@@ -11,12 +11,12 @@ var produtSchema=new Schema({
     'introduce':String,
     'department':Number,
     'department2':Number,
-    'state':Boolean,
+    'state':String,
     'score':Number,
     'evaluate':String,
-    'state2':Boolean,
+    'state2':String,
     'pass':Boolean,
-    'phone':Number
+    'phone':String
 });
 
 module.exports=mongoose.model('User',produtSchema,'users');

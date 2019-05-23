@@ -30,7 +30,7 @@ router.post('/sendmsg', (req, res, next) => {
       console.log(err.message)
     } else {
       var secretAccessKey = '',
-      accessKeyId = '';
+        accessKeyId = '';
       doc.forEach((item, index) => {
         accessKeyId = item.AccessKeyId;
         secretAccessKey = item.AccessKeySecret;
@@ -38,8 +38,9 @@ router.post('/sendmsg', (req, res, next) => {
         sendmsg.send = async (ctx, next) => {
           var time = req.body.time,
             phones = req.body.phones,
-            SignName=req.body.SignName,
-            TemplateCode=req.body.TemplateCode;
+            SignName = req.body.SignName,
+            TemplateCode = req.body.TemplateCode,
+            str = phones.split(',');
           //初始化sms_client
           let smsClient = new SMSClient({
             accessKeyId,
@@ -53,7 +54,23 @@ router.post('/sendmsg', (req, res, next) => {
             TemplateParam: '{"time":"' + time + '"}' //特别注意，这里的参数名
           })
           if (s.Code == "OK") {
-            //ctx.body = {code :1,msg :number};
+            for (let i = 0; i < str.length; i++) {
+              phones = str[i];
+              Users.update({
+                'phone': phones
+              }, {
+                $set: {
+                  'state': '1'
+                }
+              }, (err, doc) => {
+                if (err) {
+                  res.json({
+                    status: "1",
+                    msg: err.message
+                  })
+                }
+              })
+            }
             res.json({
               status: '0',
               msg: '发送成功',
@@ -254,6 +271,11 @@ router.get('/departments', (req, res, next) => {
     }
   })
 });
+
+//test
+router.post('/test', (req, res, next) => {
+  
+})
 
 
 
