@@ -6,8 +6,6 @@ const Department = require('../models/department');
 const Configs = require('../models/config');
 //阿里云短信
 const SMSClient = require('@alicloud/sms-sdk')
-const accessKeyId = 'LTAIyUpZ2UVjWtk1'//你自己在阿里云后台的accessKeyId
-const secretAccessKey = 'CnYLyTpe1dAl5gL9eCfoPrpkLvPhiA'//secretAccessKey
 var sendmsg = {};
 
 //连接数据库
@@ -21,66 +19,59 @@ mongoose.connection.on('disconnected', function () {
   console.log("MonogDb connected disconnected")
 });
 
-//查询阿里云配置接口
-Configs.find({}, {
-  AccessKeyId: 1,
-  AccessKeySecret: 1
-}, (err, doc) => {
-  if (err) {
-    console.log(err.message)
-  } else {
-    var AccessKeySecret = '',
-      AccessKeyId = '';
-    doc.forEach((item, index) => {
-      AccessKeyId = item.AccessKeyId;
-      AccessKeySecret = item.AccessKeySecret;
+//发送短信接口
+router.post('/sendmsg', (req, res, next) => {
+  //查询阿里云配置接口
+  Configs.find({}, {
+    AccessKeyId: 1,
+    AccessKeySecret: 1
+  }, (err, doc) => {
+    if (err) {
+      console.log(err.message)
+    } else {
+      var secretAccessKey = '',
+      accessKeyId = '';
+      doc.forEach((item, index) => {
+        accessKeyId = item.AccessKeyId;
+        secretAccessKey = item.AccessKeySecret;
 
-    })
-  }
-})
-
-//发送短信
-Users.find({},(err,doc)=>{
-  if(err){
-    console.log(err)
-  }else{
-   doc.forEach((item)=>{
-       //console.log(item.name);
-       console.log(item.phone+',');
-    })
-  }
-})
-router.post('/sendmsg',(req,res,next)=>{
-  sendmsg.send = async (ctx, next) =>{
-    var name=req.body.name,
-    time=req.body.time,
-    phones=req.body.phones;
-    //初始化sms_client
-    let smsClient = new SMSClient({accessKeyId, secretAccessKey})
-    //发送短信
-    var s = await smsClient.sendSMS({
-        PhoneNumbers: phones,//发送的电话号码
-        SignName: '易班招新报名',//认证签名
-        TemplateCode: 'SMS_160625180',//模板id
-        TemplateParam: '{"name":"'+name+'","time":"'+time+'"}'//特别注意，这里的参数名
-    })
-    if(s.Code=="OK"){
-        //ctx.body = {code :1,msg :number};
-        res.json({
-          status:'0',
-          msg:'发送成功',
-          result:''
-        })
-    }else{
-        //ctx.body = {code :0};
-        res.json({
-          status:'1',
-          msg:'发送失败',
-          result:''
-        })
+        sendmsg.send = async (ctx, next) => {
+          var time = req.body.time,
+            phones = req.body.phones,
+            SignName=req.body.SignName,
+            TemplateCode=req.body.TemplateCode;
+          //初始化sms_client
+          let smsClient = new SMSClient({
+            accessKeyId,
+            secretAccessKey
+          })
+          //发送短信
+          var s = await smsClient.sendSMS({
+            PhoneNumbers: phones, //发送的电话号码
+            SignName: SignName, //认证签名
+            TemplateCode: TemplateCode, //模板id
+            TemplateParam: '{"time":"' + time + '"}' //特别注意，这里的参数名
+          })
+          if (s.Code == "OK") {
+            //ctx.body = {code :1,msg :number};
+            res.json({
+              status: '0',
+              msg: '发送成功',
+              result: ''
+            })
+          } else {
+            //ctx.body = {code :0};
+            res.json({
+              status: '1',
+              msg: '发送失败',
+              result: ''
+            })
+          }
+        }
+        sendmsg.send();
+      })
     }
-  }
-  sendmsg.send();
+  })
 });
 
 //全部报名个人信息
