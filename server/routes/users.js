@@ -272,6 +272,39 @@ router.get('/departments', (req, res, next) => {
   })
 });
 
+//面试打分
+router.post('/enrollScore',(req,res,next)=>{
+  var score=req.body.score;
+  var evaluate=req.body.evaluate;
+  var id=mongoose.Types.ObjectId(req.body.id);
+  Users.findOne({'_id':id},(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      Users.update({'_id':id},{$set:{'score':score,'evaluate':evaluate,'state2':'1'}},(err,docs)=>{
+        if(err){
+          res.json({
+            status:'1',
+            msg:err.message
+          })
+        }else{
+          res.json({
+            status:'0',
+            msg:'打分成功',
+            result:''
+          })
+        }
+      })
+    }
+  })
+})
+
+//是否调剂，延迟面试
+
+
 //test
 router.post('/test', (req, res, next) => {
   
