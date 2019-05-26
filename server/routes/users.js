@@ -93,7 +93,7 @@ router.post('/sendmsg', (req, res, next) => {
 
 //全部报名个人信息
 router.get('/', function (req, res, next) {
-  Users.find({}, (err, doc) => {
+  Users.find({'state':'0'}, (err, doc) => {
     if (err) {
       res.json({
         status: '1',
@@ -116,7 +116,8 @@ router.get('/', function (req, res, next) {
 router.get('/classify', (req, res, next) => {
   const department = req.body.department;
   Users.find({
-    department: department
+    department: department,
+    state:'0'
   }, (err, doc) => {
     if (err) {
       res.json({
@@ -272,6 +273,52 @@ router.get('/departments', (req, res, next) => {
   })
 });
 
+//打分台全部的报名信息
+router.get('/mark',(req,res,next)=>{
+  Users.find({state:'1'},(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        mag:err.message
+      })
+    }else{
+      res.json({
+        status:'0',
+        msg:'',
+        result:{
+          count:doc.length,
+          list:doc
+        }
+      })
+    }
+  })
+})
+
+//打分台各部门的报名信息
+router.get('/markdepart',(req,res,next)=>{
+  const department=req.body.department;
+  Users.find({
+    department:department,
+    state:'1'
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      res.json({
+        status:'0',
+        msg:'',
+        result:{
+          count:doc.length,
+          list:doc
+        }
+      })
+    }
+  })
+})
+
 //面试打分
 router.post('/enrollScore',(req,res,next)=>{
   var score=req.body.score;
@@ -302,8 +349,63 @@ router.post('/enrollScore',(req,res,next)=>{
   })
 })
 
-//是否调剂，延迟面试
+//延迟面试
+router.post('/loading',(req,res,next)=>{
+  var id=mongoose.Types.ObjectId(req.body.id);
+  Users.findOne({'_id':id},(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+     Users.update({'_id':id},{$set:{'state':'0'}},(err,docs)=>{
+       if(err){
+         res.json({
+           status:'1',
+           msg:err.message
+         })
+       }else{
+         res.json({
+           status:'0',
+           msg:'已经延迟面试'
+         })
+       }
+     })
+    }
+  })
+})
 
+//调剂面试
+router.post('/adjust',(req,res,next)=>{
+  var id=req.body.id;
+  Users.find({'_id':id},{department2:1},(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      var newdepartment='';
+      doc.forEach((item,index)=>{
+        newdepartment=item.department2;
+        Users.update({'_id':id},{$set:{'state':'0','department':newdepartment,'department2':''}},(err,docs)=>{
+          if(err){
+            res.json({
+              status:'1',
+              msg:err.message
+            })
+          }else{
+            res.json({
+              status:'0',
+              msg:'转部门成功'
+            })
+          }
+        })
+      })
+    }
+  })
+})
 
 //test
 router.post('/test', (req, res, next) => {
