@@ -5,6 +5,7 @@ const crypto = require('crypto');
 const md5 = crypto.createHash('md5');
 const Sms = require('../models/Sms');
 var mongoose = require('mongoose');
+const Config=require('./../models/config');
 //管理员个人信息
 router.get('/', (req, res, next) => {
   Admin.find({}, (err, doc) => {
@@ -197,6 +198,15 @@ router.post('/SmsDelModel', (req, res, next) => {
       }
     }
   })
+})
+
+//修改阿里云ak
+router.post('/updatealiunAk',(req,res,next)=>{
+  var param={
+    AccessKeyId:req.body.AccessKeyId,
+    AccessKeySecret:req.body.AccessKeySecret
+  };
+  // Config.update(param,)
 })
 
 module.exports = router;

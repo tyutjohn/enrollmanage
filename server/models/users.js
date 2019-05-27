@@ -15,7 +15,7 @@ var produtSchema=new Schema({
     'score':String,
     'evaluate':String,
     'state2':String,
-    'pass':Boolean,
+    'pass':String,
     'phone':String
 });
 

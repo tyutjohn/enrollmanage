@@ -148,7 +148,9 @@ router.post('/apply', (req, res, next) => {
     schoolNum: req.body.schoolNum,
     introduce: req.body.introduce,
     department: req.body.department,
-    department2: req.body.department2
+    department2: req.body.department2,
+    state:'0',
+    state2:'0'
   });
 
   const phone = req.body.phone;
@@ -275,7 +277,7 @@ router.get('/departments', (req, res, next) => {
 
 //打分台全部的报名信息
 router.get('/mark',(req,res,next)=>{
-  Users.find({state:'1'},(err,doc)=>{
+  Users.find({state:'1',state2:'0'},(err,doc)=>{
     if(err){
       res.json({
         status:'1',
@@ -299,7 +301,8 @@ router.get('/markdepart',(req,res,next)=>{
   const department=req.body.department;
   Users.find({
     department:department,
-    state:'1'
+    state:'1',
+    state2:'0'
   },(err,doc)=>{
     if(err){
       res.json({
@@ -405,6 +408,320 @@ router.post('/adjust',(req,res,next)=>{
       })
     }
   })
+})
+
+//已经面试的全部信息
+router.get('/ainterview',(req,res,next)=>{
+  Users.find({'state2':'1','pass':''},(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      res.json({
+        status:'0',
+        msg:'',
+        result:{
+          count:doc.length,
+          list:doc
+        }
+      })
+    }
+  })
+})
+
+//已经面试的各部门的信息
+router.get('/ainterdepart',(req,res,next)=>{
+  var department=req.body.department;
+  Users.find({'state2':'1','department':department,'pass':''},(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      res.json({
+        status:'0',
+        msg:'',
+        result:{
+          count:doc.length,
+          list:doc
+        }
+      })
+    }
+  })
+})
+
+//未录取短信通知
+router.post('/sendmsgnopass',(req,res,next)=>{
+  //查询阿里云配置接口
+  Configs.find({}, {
+    AccessKeyId: 1,
+    AccessKeySecret: 1
+  }, (err, doc) => {
+    if (err) {
+      console.log(err.message)
+    } else {
+      var secretAccessKey = '',
+        accessKeyId = '';
+      doc.forEach((item, index) => {
+        accessKeyId = item.AccessKeyId;
+        secretAccessKey = item.AccessKeySecret;
+
+        sendmsg.send = async (ctx, next) => {
+        var phones = req.body.phones,
+            SignName = req.body.SignName,
+            TemplateCode = req.body.TemplateCode,
+            str = phones.split(',');
+          //初始化sms_client
+          let smsClient = new SMSClient({
+            accessKeyId,
+            secretAccessKey
+          })
+          //发送短信
+          var s = await smsClient.sendSMS({
+            PhoneNumbers: phones, //发送的电话号码
+            SignName: SignName, //认证签名
+            TemplateCode: TemplateCode, //模板id
+            TemplateParam:''
+          })
+          if (s.Code == "OK") {
+            for (let i = 0; i < str.length; i++) {
+              phones = str[i];
+              Users.updateOne({
+                'phone': phones
+              }, {
+                $set: {
+                  'pass': '0'
+                }
+              }, (err, doc) => {
+                if (err) {
+                  res.json({
+                    status: "1",
+                    msg: err.message
+                  })
+                }
+              })
+            }
+            res.json({
+              status: '0',
+              msg: '发送成功',
+              result: ''
+            })
+          } else {
+            //ctx.body = {code :0};
+            res.json({
+              status: '1',
+              msg: '发送失败',
+              result: ''
+            })
+          }
+        }
+        sendmsg.send();
+      })
+    }
+  })
+})
+
+//录取短信通知
+router.post('/sendmsgpass',(req,res,next)=>{
+  //查询阿里云配置接口
+  Configs.find({}, {
+    AccessKeyId: 1,
+    AccessKeySecret: 1
+  }, (err, doc) => {
+    if (err) {
+      console.log(err.message)
+    } else {
+      var secretAccessKey = '',
+        accessKeyId = '';
+      doc.forEach((item, index) => {
+        accessKeyId = item.AccessKeyId;
+        secretAccessKey = item.AccessKeySecret;
+
+        sendmsg.send = async (ctx, next) => {
+        var phones = req.body.phones,
+            SignName = req.body.SignName,
+            TemplateCode = req.body.TemplateCode,
+            str = phones.split(',');
+          //初始化sms_client
+          let smsClient = new SMSClient({
+            accessKeyId,
+            secretAccessKey
+          })
+          //发送短信
+          var s = await smsClient.sendSMS({
+            PhoneNumbers: phones, //发送的电话号码
+            SignName: SignName, //认证签名
+            TemplateCode: TemplateCode, //模板id
+            TemplateParam:''
+          })
+          if (s.Code == "OK") {
+            for (let i = 0; i < str.length; i++) {
+              phones = str[i];
+              Users.updateOne({
+                'phone': phones
+              }, {
+                $set: {
+                  'pass': '1'
+                }
+              }, (err, doc) => {
+                if (err) {
+                  res.json({
+                    status: "1",
+                    msg: err.message
+                  })
+                }
+              })
+            }
+            res.json({
+              status: '0',
+              msg: '发送成功',
+              result: ''
+            })
+          } else {
+            //ctx.body = {code :0};
+            res.json({
+              status: '1',
+              msg: '发送失败',
+              result: ''
+            })
+          }
+        }
+        sendmsg.send();
+      })
+    }
+  })
+})
+
+//已经录取的全部信息
+router.get('/admitall',(req,res,next)=>{
+  Users.find({'pass':'1'},(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      res.json({
+        status:'0',
+        msg:'',
+        result:{
+          count:doc.length,
+          list:doc
+        }
+      })
+    }
+  })
+})
+
+//已经录取的各个部门的信息
+router.get('/admitdepart',(req,res,next)=>{
+  var department=req.body.department;
+  Users.find({'pass':'1','department':department},(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      res.json({
+        status:'0',
+        msg:'',
+        result:{
+          count:doc.length,
+          list:doc
+        }
+      })
+    }
+  })
+})
+
+//未录取的信息
+router.get('/admitnopass',(req,res,next)=>{
+  Users.find({'pass':'0'},(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      res.json({
+        status:'0',
+        msg:'',
+        result:{
+          count:doc.length,
+          list:doc
+        }
+      })
+    }
+  })
+})
+
+//查询结果
+router.post('/userfind',(req,res,next)=>{
+  var name=req.body.name,
+      phone=req.body.phone;
+  if(!name==''){
+    if(!phone==''){
+      Users.find({phone},(err,doc)=>{
+        if(err){
+          res.json({
+            status:'1',
+            msg:err.message
+          })
+        }else{
+          if(doc.length>0){
+            doc.forEach((item)=>{
+              if(item.pass=='0'){
+                res.json({
+                  status:'0',
+                  msg:'很遗憾，您没有被我们录取，祝愿您以后的生活，学习愉快'
+                });
+              }else if(item.pass=='1'){
+                var department=item.department;
+                Department.find({department_id:department},(err,docs)=>{
+                  if(err){
+                    res.json({
+                      status:'1',
+                      msg:err.message
+                    })
+                  }else{
+                    docs.forEach((item,index)=>{
+                      var qqNum=item.department_qq;
+                      res.json({
+                        status:'0',
+                        msg:'恭喜您被我们录取，请加入群:'+qqNum+',您的小伙伴已经在群里等你了',
+                        result:{
+                          list:docs
+                        }
+                      })
+                    })  
+                  }
+                })
+              }
+            });
+          }else{
+            res.json({
+              status:'1001',
+              msg:'未查询到该用户的信息，请确认手机号是否填写正确'
+            })
+          }     
+        }
+      })
+    }else{
+      res.json({
+        status:'1001',
+        msg:'未填写手机号'
+      })
+    }
+  }else{
+    res.json({
+      status:'1001',
+      msg:'未填写姓名'
+    })
+  }
 })
 
 //test
