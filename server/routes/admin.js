@@ -43,7 +43,7 @@ router.post('/login', (req, res, next) => {
       let cookienum = md5.update(doc.id).digest('hex')
       res.cookie("userId", cookienum, {
         path: '/',
-        maxAge: 1000 * 60 * 60
+        maxAge: 2000 * 60 * 60
       });
       //req.session.user = doc;
       res.json({

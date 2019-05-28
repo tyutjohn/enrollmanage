@@ -4,9 +4,17 @@ import Vue from 'vue'
 import App from './App'
 import router from './router'
 import axios from 'axios'
+import VueAxios from 'vue-axios'
 import Vuex from 'vuex'
 import VueLazyload from 'vue-lazyload'
+import ElementUI from 'element-ui';
+import 'element-ui/lib/theme-chalk/index.css';
+import {Button,Select} from 'element-ui';
 
+// Vue.components(Button.name,Button);
+// Vue.components(Select.name,Select);
+Vue.use(ElementUI);
+Vue.use(VueAxios,axios);
 Vue.use(Vuex);
 Vue.use(VueLazyload,{
   loading:'static/loading-svg/loading-bars.svg',
@@ -20,5 +28,7 @@ new Vue({
   el: '#app',
   router,
   components: { App },
-  template: '<App/>'
+  template: '<App/>',
+  render:h=>h(App)
 })
+
