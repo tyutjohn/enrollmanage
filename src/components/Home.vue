@@ -10,6 +10,8 @@
                 @close="handleClose"
                 background-color="#545c64"
                 text-color="#fff"
+                default-active='1-1'
+                @select="handleSelect"
                 active-text-color="#ffd04b">
                 <el-submenu index="1">
                     <template slot="title">
@@ -17,7 +19,7 @@
                     <span>面试管理控制台</span>
                     </template>
                     <el-menu-item-group>
-                    <el-menu-item index="/inform">通知面试</el-menu-item>
+                    <el-menu-item index="1-1">通知面试</el-menu-item>
                     </el-menu-item-group>
                     <el-menu-item index="1-2">面试打分</el-menu-item>
                     </el-menu-item-group>     
@@ -36,7 +38,8 @@
                 </el-menu>
             </el-aside>
             <el-main>
-              <nav-inform></nav-inform>
+              <!-- <nav-inform></nav-inform> -->
+              <router-view></router-view>
             </el-main>
         </el-container>
         <el-footer class="footer">footer</el-footer>
@@ -52,6 +55,7 @@
   }
   
   .el-main {
+    padding: 0;
     background-color: #E9EEF3;
     color: #333;
     text-align: center;
@@ -91,11 +95,12 @@
 </style>
 
 <script>
-  import NavInform from './../components/Inform.vue'
+  import NavInform from './../components/Inform.vue';
+
   export default {
     data () {
       return {
-
+        
       };
     },
 
@@ -107,7 +112,9 @@
 
     beforeMount() {},
 
-    mounted() {},
+    mounted() {
+      
+    },
 
     methods: {
         handleOpen(key, keyPath) {
@@ -115,6 +122,16 @@
       },
       handleClose(key, keyPath) {
         
+      },
+      handleSelect(key,keyPath){
+        switch(key){
+          case '1-1':
+            this.$router.push('/Inform');
+            break;
+          case '1-2':
+            this.$router.push('/Viewscore');
+            break;
+        }
       }
     },
 

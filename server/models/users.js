@@ -16,7 +16,8 @@ var produtSchema=new Schema({
     'evaluate':String,
     'state2':String,
     'pass':String,
-    'phone':String
+    'phone':String,
+    'campus':String
 });
 
 module.exports=mongoose.model('User',produtSchema,'users');

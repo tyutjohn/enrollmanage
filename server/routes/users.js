@@ -149,6 +149,7 @@ router.post('/apply', (req, res, next) => {
     introduce: req.body.introduce,
     department: req.body.department,
     department2: req.body.department2,
+    campus:req.body.campus,
     state:'0',
     state2:'0'
   });
@@ -161,6 +162,7 @@ router.post('/apply', (req, res, next) => {
   const schoolNum = req.body.schoolNum;
   const introduce = req.body.introduce;
   const department = req.body.department;
+  const campus=req.body.campus;
   if (!name == '') {
     if (!phone == '') {
       if (!sex == '') {
@@ -169,33 +171,40 @@ router.post('/apply', (req, res, next) => {
             if (!schoolNum == '') {
               if (!introduce == '') {
                 if (!department == '') {
-                  Users.find({
-                    phone: phone
-                  }, (err, doc) => {
-                    if (doc.length > 0) {
-                      res.json({
-                        status: '1001',
-                        msg: '该手机号已经报名',
-                        result: ''
-                      })
-                    } else {
-                      param.save((err, docs) => {
-                        if (err) {
-                          res.json({
-                            status: '1',
-                            msg: err.message,
-                            result: ''
-                          })
-                        } else {
-                          res.json({
-                            status: '0',
-                            msg: '报名成功',
-                            result: ''
-                          })
-                        }
-                      })
-                    }
-                  })
+                  if(!campus==''){
+                    Users.find({
+                      phone: phone
+                    }, (err, doc) => {
+                      if (doc.length > 0) {
+                        res.json({
+                          status: '1001',
+                          msg: '该手机号已经报名',
+                          result: ''
+                        })
+                      } else {
+                        param.save((err, docs) => {
+                          if (err) {
+                            res.json({
+                              status: '1',
+                              msg: err.message,
+                              result: ''
+                            })
+                          } else {
+                            res.json({
+                              status: '0',
+                              msg: '报名成功',
+                              result: ''
+                            })
+                          }
+                        })
+                      }
+                    })
+                  }else{
+                    res.json({
+                      status:'1001',
+                      msg:'校区未填写'
+                    })
+                  }
                 } else {
                   res.json({
                     status: '1001',
