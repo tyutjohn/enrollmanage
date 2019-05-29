@@ -1,12 +1,12 @@
 <template>
   <div>
       <el-table
-      ref="multipleTable"
-      :data="tableData3"
+      :data="usergetdata"
       tooltip-effect="dark"
       style="width: 100%"
       stripe
-      height="600"
+      border
+      height="800px"
       @selection-change="handleSelectionChange">
       <el-table-column
       type="index"
@@ -19,43 +19,49 @@
       <el-table-column
         label="姓名"
         width="100">
-        <template slot-scope="scope">{{ scope.row.date }}</template>
+        <template slot-scope="scope">{{ scope.row.name }}</template>
       </el-table-column>
       <el-table-column
         prop="name"
         label="性别"
         width="60">
+        <template slot-scope="scope">{{ scope.row.sex }}</template>
       </el-table-column>
       <el-table-column
         prop="address"
         label="专业"
-        width="120"
-        show-overflow-tooltip>
+        width="120">
+        <template slot-scope="scope">{{ scope.row.major }}</template>
       </el-table-column>
       <el-table-column
         prop="name"
         label="班级"
         width="90">
+        <template slot-scope="scope">{{ scope.row.class }}</template>
       </el-table-column>
       <el-table-column
         prop="name"
         label="校区"
         width="120">
+        <template slot-scope="scope">{{ scope.row.campus }}</template>
       </el-table-column>
       <el-table-column
         prop="name"
         label="电话"
         width="160">
+        <template slot-scope="scope">{{ scope.row.phone }}</template>
       </el-table-column>
       <el-table-column
         prop="name"
         label="志愿部门一"
         width="120">
+        <template slot-scope="scope">{{ scope.row.department }}</template>
       </el-table-column>
       <el-table-column
         prop="name"
         label="志愿部门二"
         width="120">
+        <template slot-scope="scope">{{ scope.row.department2 }}</template>
       </el-table-column>
     </el-table>
     <!-- <el-pagination
@@ -79,51 +85,9 @@
   export default {
     data () {
       return {
-tableData3: [{
-          date: '2016-05-03',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-02',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-04',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-01',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-08',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-06',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }, {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        },
-        {
-          date: '2016-05-07',
-          name: '王小虎',
-          address: '上海市普陀区金沙江路 1518 弄'
-        }],
-        multipleSelection: []
+        
+        multipleSelection: [],
+        usergetdata:[]
       
       };
     },
@@ -134,7 +98,9 @@ tableData3: [{
 
     beforeMount() {},
 
-    mounted() {},
+    mounted() {
+      this.infordata();
+    },
 
     methods: {
        toggleSelection(rows) {
@@ -151,6 +117,14 @@ tableData3: [{
       },
       indexMethod(index) {
         return index+1;
+      },
+      infordata(){
+        this.axios.get('/users/').then((res)=>{
+          this.usergetdata=res.data.result.list
+        console.log(res);
+        }).catch((response)=>{
+          console.log(response);
+        })
       }
     },
 
