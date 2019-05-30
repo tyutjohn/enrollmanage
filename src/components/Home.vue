@@ -30,9 +30,9 @@
                     <span>录取管理控制台</span>
                     </template>
                     <el-menu-item-group>
-                    <el-menu-item>已面试</el-menu-item>
+                    <el-menu-item index="2-1">已面试</el-menu-item>
                     </el-menu-item-group>
-                    <el-menu-item>已录取</el-menu-item>
+                    <el-menu-item index="2-2">已录取</el-menu-item>
                     </el-menu-item-group>     
                 </el-submenu>       
                 </el-menu>
@@ -51,7 +51,7 @@
     background-color: #B3C0D1;
     color: #333;
     text-align: center;
-    line-height: 60px;
+    line-height: 30px;
   }
   
   .el-main {
@@ -59,7 +59,7 @@
     background-color: #E9EEF3;
     color: #333;
     text-align: center;
-    line-height: 160px;
+    height:700px;
   }
   
   body > .el-container {
@@ -81,12 +81,13 @@
 
   .el-menu-vertical-demo{
     width: 200px;
-    min-height: 660px;
+    min-height: 700px;
   }
 
   .footer{
-      position:fixed;
+      position: absolute;;
       bottom:0;
+      height: 30px !important;
       width:100%;
       background:rgba(71, 71, 71, 0.555)(51, 51, 51, 0.719);
       color:#E9EEF3;
@@ -130,6 +131,12 @@
             break;
           case '1-2':
             this.$router.push('/Viewscore');
+            break;
+          case '2-1':
+            this.$router.push('/Areadyinter');
+            break;
+          case '2-2':
+            this.$router.push('/Areadyenroll');
             break;
         }
       }

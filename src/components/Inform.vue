@@ -6,7 +6,7 @@
       style="width: 100%"
       stripe
       border
-      height="800px"
+      height="600px"
       @selection-change="handleSelectionChange">
       <el-table-column
       type="index"
@@ -22,46 +22,39 @@
         <template slot-scope="scope">{{ scope.row.name }}</template>
       </el-table-column>
       <el-table-column
-        prop="name"
         label="性别"
         width="60">
         <template slot-scope="scope">{{ scope.row.sex }}</template>
       </el-table-column>
       <el-table-column
-        prop="address"
         label="专业"
         width="120">
         <template slot-scope="scope">{{ scope.row.major }}</template>
       </el-table-column>
       <el-table-column
-        prop="name"
         label="班级"
         width="90">
         <template slot-scope="scope">{{ scope.row.class }}</template>
       </el-table-column>
       <el-table-column
-        prop="name"
         label="校区"
         width="120">
         <template slot-scope="scope">{{ scope.row.campus }}</template>
       </el-table-column>
       <el-table-column
-        prop="name"
         label="电话"
         width="160">
         <template slot-scope="scope">{{ scope.row.phone }}</template>
       </el-table-column>
       <el-table-column
-        prop="name"
         label="志愿部门一"
         width="120">
-        <template slot-scope="scope">{{ scope.row.department }}</template>
+        <template slot-scope="scope">{{ getdepartname(scope.row.department) }}</template>
       </el-table-column>
       <el-table-column
-        prop="name"
         label="志愿部门二"
         width="120">
-        <template slot-scope="scope">{{ scope.row.department2 }}</template>
+        <template slot-scope="scope">{{ getdepartname(scope.row.department2) }}</template>
       </el-table-column>
     </el-table>
     <!-- <el-pagination
@@ -75,8 +68,9 @@
   </div>
 </template>
 <style>
-.el-table__header-wrapper {
-    height: 120px;
+.el-table--border {
+    padding-left: 20px;
+    padding-top:20px;
 }
 </style>
 
@@ -85,21 +79,30 @@
   export default {
     data () {
       return {
-        
         multipleSelection: [],
-        usergetdata:[]
-      
+        usergetdata:[],
+        departdata:{
+          department_name:{}
+        }
       };
     },
 
     components: {},
+    computed: {
+      getdepartname(){
+        return function(res){
+            return this.departdata[res].department_name;
+        }
+      }
+    },
 
-    computed: {},
-
-    beforeMount() {},
+    beforeMount() {
+      this.departmentdata();
+    },
 
     mounted() {
       this.infordata();
+      this.departmentdata();
     },
 
     methods: {
@@ -122,6 +125,14 @@
         this.axios.get('/users/').then((res)=>{
           this.usergetdata=res.data.result.list
         console.log(res);
+        }).catch((response)=>{
+          console.log(response);
+        })
+      },
+      departmentdata(){
+        this.axios.get('/users/departments').then((res)=>{
+          this.departdata=res.data.result.list;
+          //console.log(res);
         }).catch((response)=>{
           console.log(response);
         })
