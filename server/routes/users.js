@@ -46,42 +46,70 @@ router.post('/sendmsg', (req, res, next) => {
             accessKeyId,
             secretAccessKey
           })
-          //发送短信
-          var s = await smsClient.sendSMS({
-            PhoneNumbers: phones, //发送的电话号码
-            SignName: SignName, //认证签名
-            TemplateCode: TemplateCode, //模板id
-            TemplateParam: '{"time":"' + time + '"}' //特别注意，这里的参数名
-          })
-          if (s.Code == "OK") {
-            for (let i = 0; i < str.length; i++) {
-              phones = str[i];
-              Users.update({
-                'phone': phones
-              }, {
-                $set: {
-                  'state': '1'
-                }
-              }, (err, doc) => {
-                if (err) {
+          if (!phones == '') {
+            if (!SignName == '') {
+              if (!TemplateCode == '') {
+                if (!time == '') {
+                  //发送短信
+                  var s = await smsClient.sendSMS({
+                    PhoneNumbers: phones, //发送的电话号码
+                    SignName: SignName, //认证签名
+                    TemplateCode: TemplateCode, //模板id
+                    TemplateParam: '{"time":"' + time + '"}' //特别注意，这里的参数名
+                  })
+                  if (s.Code == "OK") {
+                    for (let i = 0; i < str.length; i++) {
+                      phones = str[i];
+                      Users.update({
+                        'phone': phones
+                      }, {
+                        $set: {
+                          'state': '1'
+                        }
+                      }, (err, doc) => {
+                        if (err) {
+                          res.json({
+                            status: "1",
+                            msg: err.message
+                          })
+                        }
+                      })
+                    }
+                    res.json({
+                      status: '0',
+                      msg: '发送成功',
+                      result: ''
+                    })
+                  } else {
+                    //ctx.body = {code :0};
+                    res.json({
+                      status: '1',
+                      msg: '发送失败',
+                      result: ''
+                    })
+                  }
+                } else {
                   res.json({
-                    status: "1",
-                    msg: err.message
+                    status: '1001',
+                    msg: '未选择面试时间'
                   })
                 }
+              } else {
+                res.json({
+                  status: '1001',
+                  msg: '未选择短信模板'
+                })
+              }
+            } else {
+              res.json({
+                status: '1001',
+                msg: '未选择模板签名'
               })
             }
-            res.json({
-              status: '0',
-              msg: '发送成功',
-              result: ''
-            })
           } else {
-            //ctx.body = {code :0};
             res.json({
-              status: '1',
-              msg: '发送失败',
-              result: ''
+              status: '1001',
+              msg: '未选择发送的对象'
             })
           }
         }
@@ -93,7 +121,9 @@ router.post('/sendmsg', (req, res, next) => {
 
 //全部报名个人信息
 router.get('/', function (req, res, next) {
-  Users.find({'state':'0'}, (err, doc) => {
+  Users.find({
+    'state': '0'
+  }, (err, doc) => {
     if (err) {
       res.json({
         status: '1',
@@ -117,7 +147,7 @@ router.get('/classify', (req, res, next) => {
   const department = req.body.department;
   Users.find({
     department: department,
-    state:'0'
+    state: '0'
   }, (err, doc) => {
     if (err) {
       res.json({
@@ -149,9 +179,9 @@ router.post('/apply', (req, res, next) => {
     introduce: req.body.introduce,
     department: req.body.department,
     department2: req.body.department2,
-    campus:req.body.campus,
-    state:'0',
-    state2:'0'
+    campus: req.body.campus,
+    state: '0',
+    state2: '0'
   });
 
   const phone = req.body.phone;
@@ -162,7 +192,7 @@ router.post('/apply', (req, res, next) => {
   const schoolNum = req.body.schoolNum;
   const introduce = req.body.introduce;
   const department = req.body.department;
-  const campus=req.body.campus;
+  const campus = req.body.campus;
   if (!name == '') {
     if (!phone == '') {
       if (!sex == '') {
@@ -171,7 +201,7 @@ router.post('/apply', (req, res, next) => {
             if (!schoolNum == '') {
               if (!introduce == '') {
                 if (!department == '') {
-                  if(!campus==''){
+                  if (!campus == '') {
                     Users.find({
                       phone: phone
                     }, (err, doc) => {
@@ -199,10 +229,10 @@ router.post('/apply', (req, res, next) => {
                         })
                       }
                     })
-                  }else{
+                  } else {
                     res.json({
-                      status:'1001',
-                      msg:'校区未填写'
+                      status: '1001',
+                      msg: '校区未填写'
                     })
                   }
                 } else {
@@ -285,20 +315,23 @@ router.get('/departments', (req, res, next) => {
 });
 
 //打分台全部的报名信息
-router.get('/mark',(req,res,next)=>{
-  Users.find({state:'1',state2:'0'},(err,doc)=>{
-    if(err){
+router.get('/mark', (req, res, next) => {
+  Users.find({
+    state: '1',
+    state2: '0'
+  }, (err, doc) => {
+    if (err) {
       res.json({
-        status:'1',
-        mag:err.message
+        status: '1',
+        mag: err.message
       })
-    }else{
+    } else {
       res.json({
-        status:'0',
-        msg:'',
-        result:{
-          count:doc.length,
-          list:doc
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc
         }
       })
     }
@@ -306,25 +339,25 @@ router.get('/mark',(req,res,next)=>{
 })
 
 //打分台各部门的报名信息
-router.get('/markdepart',(req,res,next)=>{
-  const department=req.body.department;
+router.get('/markdepart', (req, res, next) => {
+  const department = req.body.department;
   Users.find({
-    department:department,
-    state:'1',
-    state2:'0'
-  },(err,doc)=>{
-    if(err){
+    department: department,
+    state: '1',
+    state2: '0'
+  }, (err, doc) => {
+    if (err) {
       res.json({
-        status:'1',
-        msg:err.message
+        status: '1',
+        msg: err.message
       })
-    }else{
+    } else {
       res.json({
-        status:'0',
-        msg:'',
-        result:{
-          count:doc.length,
-          list:doc
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc
         }
       })
     }
@@ -332,28 +365,38 @@ router.get('/markdepart',(req,res,next)=>{
 })
 
 //面试打分
-router.post('/enrollScore',(req,res,next)=>{
-  var score=req.body.score;
-  var evaluate=req.body.evaluate;
-  var id=mongoose.Types.ObjectId(req.body.id);
-  Users.findOne({'_id':id},(err,doc)=>{
-    if(err){
+router.post('/enrollScore', (req, res, next) => {
+  var score = req.body.score;
+  var evaluate = req.body.evaluate;
+  var id = mongoose.Types.ObjectId(req.body.id);
+  Users.findOne({
+    '_id': id
+  }, (err, doc) => {
+    if (err) {
       res.json({
-        status:'1',
-        msg:err.message
+        status: '1',
+        msg: err.message
       })
-    }else{
-      Users.update({'_id':id},{$set:{'score':score,'evaluate':evaluate,'state2':'1'}},(err,docs)=>{
-        if(err){
+    } else {
+      Users.update({
+        '_id': id
+      }, {
+        $set: {
+          'score': score,
+          'evaluate': evaluate,
+          'state2': '1'
+        }
+      }, (err, docs) => {
+        if (err) {
           res.json({
-            status:'1',
-            msg:err.message
+            status: '1',
+            msg: err.message
           })
-        }else{
+        } else {
           res.json({
-            status:'0',
-            msg:'打分成功',
-            result:''
+            status: '0',
+            msg: '打分成功',
+            result: ''
           })
         }
       })
@@ -362,55 +405,75 @@ router.post('/enrollScore',(req,res,next)=>{
 })
 
 //延迟面试
-router.post('/loading',(req,res,next)=>{
-  var id=mongoose.Types.ObjectId(req.body.id);
-  Users.findOne({'_id':id},(err,doc)=>{
-    if(err){
+router.post('/loading', (req, res, next) => {
+  var id = mongoose.Types.ObjectId(req.body.id);
+  Users.findOne({
+    '_id': id
+  }, (err, doc) => {
+    if (err) {
       res.json({
-        status:'1',
-        msg:err.message
+        status: '1',
+        msg: err.message
       })
-    }else{
-     Users.update({'_id':id},{$set:{'state':'0'}},(err,docs)=>{
-       if(err){
-         res.json({
-           status:'1',
-           msg:err.message
-         })
-       }else{
-         res.json({
-           status:'0',
-           msg:'已经延迟面试'
-         })
-       }
-     })
+    } else {
+      Users.update({
+        '_id': id
+      }, {
+        $set: {
+          'state': '0'
+        }
+      }, (err, docs) => {
+        if (err) {
+          res.json({
+            status: '1',
+            msg: err.message
+          })
+        } else {
+          res.json({
+            status: '0',
+            msg: '已经延迟面试'
+          })
+        }
+      })
     }
   })
 })
 
 //调剂面试
-router.post('/adjust',(req,res,next)=>{
-  var id=req.body.id;
-  Users.find({'_id':id},{department2:1},(err,doc)=>{
-    if(err){
+router.post('/adjust', (req, res, next) => {
+  var id = req.body.id;
+  Users.find({
+    '_id': id
+  }, {
+    department2: 1
+  }, (err, doc) => {
+    if (err) {
       res.json({
-        status:'1',
-        msg:err.message
+        status: '1',
+        msg: err.message
       })
-    }else{
-      var newdepartment='';
-      doc.forEach((item,index)=>{
-        newdepartment=item.department2;
-        Users.update({'_id':id},{$set:{'state':'0','department':newdepartment,'department2':''}},(err,docs)=>{
-          if(err){
+    } else {
+      var newdepartment = '';
+      doc.forEach((item, index) => {
+        newdepartment = item.department2;
+        Users.update({
+          '_id': id
+        }, {
+          $set: {
+            'state': '0',
+            'department': newdepartment,
+            'department2': ''
+          }
+        }, (err, docs) => {
+          if (err) {
             res.json({
-              status:'1',
-              msg:err.message
+              status: '1',
+              msg: err.message
             })
-          }else{
+          } else {
             res.json({
-              status:'0',
-              msg:'转部门成功'
+              status: '0',
+              msg: '转部门成功'
             })
           }
         })
@@ -420,20 +483,23 @@ router.post('/adjust',(req,res,next)=>{
 })
 
 //已经面试的全部信息
-router.get('/ainterview',(req,res,next)=>{
-  Users.find({'state2':'1','pass':''},(err,doc)=>{
-    if(err){
+router.get('/ainterview', (req, res, next) => {
+  Users.find({
+    'state2': '1',
+    'pass': ''
+  }, (err, doc) => {
+    if (err) {
       res.json({
-        status:'1',
-        msg:err.message
+        status: '1',
+        msg: err.message
       })
-    }else{
+    } else {
       res.json({
-        status:'0',
-        msg:'',
-        result:{
-          count:doc.length,
-          list:doc
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc
         }
       })
     }
@@ -441,21 +507,25 @@ router.get('/ainterview',(req,res,next)=>{
 })
 
 //已经面试的各部门的信息
-router.get('/ainterdepart',(req,res,next)=>{
-  var department=req.body.department;
-  Users.find({'state2':'1','department':department,'pass':''},(err,doc)=>{
-    if(err){
+router.get('/ainterdepart', (req, res, next) => {
+  var department = req.body.department;
+  Users.find({
+    'state2': '1',
+    'department': department,
+    'pass': ''
+  }, (err, doc) => {
+    if (err) {
       res.json({
-        status:'1',
-        msg:err.message
+        status: '1',
+        msg: err.message
       })
-    }else{
+    } else {
       res.json({
-        status:'0',
-        msg:'',
-        result:{
-          count:doc.length,
-          list:doc
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc
         }
       })
     }
@@ -463,7 +533,7 @@ router.get('/ainterdepart',(req,res,next)=>{
 })
 
 //未录取短信通知
-router.post('/sendmsgnopass',(req,res,next)=>{
+router.post('/sendmsgnopass', (req, res, next) => {
   //查询阿里云配置接口
   Configs.find({}, {
     AccessKeyId: 1,
@@ -479,7 +549,7 @@ router.post('/sendmsgnopass',(req,res,next)=>{
         secretAccessKey = item.AccessKeySecret;
 
         sendmsg.send = async (ctx, next) => {
-        var phones = req.body.phones,
+          var phones = req.body.phones,
             SignName = req.body.SignName,
             TemplateCode = req.body.TemplateCode,
             str = phones.split(',');
@@ -493,7 +563,7 @@ router.post('/sendmsgnopass',(req,res,next)=>{
             PhoneNumbers: phones, //发送的电话号码
             SignName: SignName, //认证签名
             TemplateCode: TemplateCode, //模板id
-            TemplateParam:''
+            TemplateParam: ''
           })
           if (s.Code == "OK") {
             for (let i = 0; i < str.length; i++) {
@@ -534,7 +604,7 @@ router.post('/sendmsgnopass',(req,res,next)=>{
 })
 
 //录取短信通知
-router.post('/sendmsgpass',(req,res,next)=>{
+router.post('/sendmsgpass', (req, res, next) => {
   //查询阿里云配置接口
   Configs.find({}, {
     AccessKeyId: 1,
@@ -550,7 +620,7 @@ router.post('/sendmsgpass',(req,res,next)=>{
         secretAccessKey = item.AccessKeySecret;
 
         sendmsg.send = async (ctx, next) => {
-        var phones = req.body.phones,
+          var phones = req.body.phones,
             SignName = req.body.SignName,
             TemplateCode = req.body.TemplateCode,
             str = phones.split(',');
@@ -564,7 +634,7 @@ router.post('/sendmsgpass',(req,res,next)=>{
             PhoneNumbers: phones, //发送的电话号码
             SignName: SignName, //认证签名
             TemplateCode: TemplateCode, //模板id
-            TemplateParam:''
+            TemplateParam: ''
           })
           if (s.Code == "OK") {
             for (let i = 0; i < str.length; i++) {
@@ -605,20 +675,22 @@ router.post('/sendmsgpass',(req,res,next)=>{
 })
 
 //已经录取的全部信息
-router.get('/admitall',(req,res,next)=>{
-  Users.find({'pass':'1'},(err,doc)=>{
-    if(err){
+router.get('/admitall', (req, res, next) => {
+  Users.find({
+    'pass': '1'
+  }, (err, doc) => {
+    if (err) {
       res.json({
-        status:'1',
-        msg:err.message
+        status: '1',
+        msg: err.message
       })
-    }else{
+    } else {
       res.json({
-        status:'0',
-        msg:'',
-        result:{
-          count:doc.length,
-          list:doc
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc
         }
       })
     }
@@ -626,21 +698,24 @@ router.get('/admitall',(req,res,next)=>{
 })
 
 //已经录取的各个部门的信息
-router.get('/admitdepart',(req,res,next)=>{
-  var department=req.body.department;
-  Users.find({'pass':'1','department':department},(err,doc)=>{
-    if(err){
+router.get('/admitdepart', (req, res, next) => {
+  var department = req.body.department;
+  Users.find({
+    'pass': '1',
+    'department': department
+  }, (err, doc) => {
+    if (err) {
       res.json({
-        status:'1',
-        msg:err.message
+        status: '1',
+        msg: err.message
       })
-    }else{
+    } else {
       res.json({
-        status:'0',
-        msg:'',
-        result:{
-          count:doc.length,
-          list:doc
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc
         }
       })
     }
@@ -648,20 +723,22 @@ router.get('/admitdepart',(req,res,next)=>{
 })
 
 //未录取的信息
-router.get('/admitnopass',(req,res,next)=>{
-  Users.find({'pass':'0'},(err,doc)=>{
-    if(err){
+router.get('/admitnopass', (req, res, next) => {
+  Users.find({
+    'pass': '0'
+  }, (err, doc) => {
+    if (err) {
       res.json({
-        status:'1',
-        msg:err.message
+        status: '1',
+        msg: err.message
       })
-    }else{
+    } else {
       res.json({
-        status:'0',
-        msg:'',
-        result:{
-          count:doc.length,
-          list:doc
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc
         }
       })
     }
@@ -669,73 +746,77 @@ router.get('/admitnopass',(req,res,next)=>{
 })
 
 //查询结果
-router.post('/userfind',(req,res,next)=>{
-  var name=req.body.name,
-      phone=req.body.phone;
-  if(!name==''){
-    if(!phone==''){
-      Users.find({phone},(err,doc)=>{
-        if(err){
+router.post('/userfind', (req, res, next) => {
+  var name = req.body.name,
+    phone = req.body.phone;
+  if (!name == '') {
+    if (!phone == '') {
+      Users.find({
+        phone
+      }, (err, doc) => {
+        if (err) {
           res.json({
-            status:'1',
-            msg:err.message
+            status: '1',
+            msg: err.message
           })
-        }else{
-          if(doc.length>0){
-            doc.forEach((item)=>{
-              if(item.pass=='0'){
+        } else {
+          if (doc.length > 0) {
+            doc.forEach((item) => {
+              if (item.pass == '0') {
                 res.json({
-                  status:'0',
-                  msg:'很遗憾，您没有被我们录取，祝愿您以后的生活，学习愉快'
+                  status: '0',
+                  msg: '很遗憾，您没有被我们录取，祝愿您以后的生活，学习愉快'
                 });
-              }else if(item.pass=='1'){
-                var department=item.department;
-                Department.find({department_id:department},(err,docs)=>{
-                  if(err){
+              } else if (item.pass == '1') {
+                var department = item.department;
+                Department.find({
+                  department_id: department
+                }, (err, docs) => {
+                  if (err) {
                     res.json({
-                      status:'1',
-                      msg:err.message
+                      status: '1',
+                      msg: err.message
                     })
-                  }else{
-                    docs.forEach((item,index)=>{
-                      var qqNum=item.department_qq;
+                  } else {
+                    docs.forEach((item, index) => {
+                      var qqNum = item.department_qq;
                       res.json({
-                        status:'0',
-                        msg:'恭喜您被我们录取，请加入群:'+qqNum+',您的小伙伴已经在群里等你了',
-                        result:{
-                          list:docs
+                        status: '0',
+                        msg: '恭喜您被我们录取，请加入群:' + qqNum + ',您的小伙伴已经在群里等你了',
+                        result: {
+                          list: docs
                         }
                       })
-                    })  
+                    })
                   }
                 })
               }
             });
-          }else{
+          } else {
             res.json({
-              status:'1001',
-              msg:'未查询到该用户的信息，请确认手机号是否填写正确'
+              status: '1001',
+              msg: '未查询到该用户的信息，请确认手机号是否填写正确'
             })
-          }     
+          }
         }
       })
-    }else{
+    } else {
       res.json({
-        status:'1001',
-        msg:'未填写手机号'
+        status: '1001',
+        msg: '未填写手机号'
       })
     }
-  }else{
+  } else {
     res.json({
-      status:'1001',
-      msg:'未填写姓名'
+      status: '1001',
+      msg: '未填写姓名'
     })
   }
 })
 
 //test
 router.post('/test', (req, res, next) => {
-  
+
 })
 
 
