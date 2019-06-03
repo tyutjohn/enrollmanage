@@ -57,15 +57,22 @@
         width="120">
         <template slot-scope="scope">{{ getdepartname(scope.row.department2) }}</template>
       </el-table-column>
+      <el-table-column>
+        <template slot="header" slot-scope="scope">
+            <el-select v-model="department_id" placeholder="请选择查看的部门" @change="selectdiffdepart()">
+              <el-option
+                v-for="item in departmentinfor"
+                :key="item.department_id"
+                :label="item.department_name"
+                :value="item.department_id">
+              </el-option>
+            </el-select>
+        </template>
+      </el-table-column>
     </el-table>
-    <!-- <el-pagination
-      background
-      layout="prev, pager, next"
-      :total="1000">
-    </el-pagination> -->
     <div style="margin-top: 10px" class="main-bottom">
       <div class="bottom-left">
-        <el-select v-model="value" filterable placeholder="请选择">
+        <el-select v-model="value" filterable placeholder="请选择发送签名模板">
           <el-option
             v-for="item in smsdata"
             :label="item.SignName"
@@ -73,7 +80,7 @@
             :value="item.SignName">
           </el-option>
         </el-select>
-        <el-select v-model="value1" filterable placeholder="请选择">
+        <el-select v-model="value1" filterable placeholder="请选择发送短信模板">
           <el-option
             v-for="item in smsdata"
             :label="item.describe"
@@ -123,11 +130,15 @@
         departdata:{
           department_name:{}
         },
-        value: '',
-        value1: '',
-        value2:'',
-        smsdata:{},
-        phones:''
+        value: '',//签名模板
+        value1: '',//短信模板
+        value2:'',//时间
+        smsdata:{},//短信配置
+        phones:'',//选中手机号
+        departmentinfor:{
+          department_name:'',
+        },//各部门信息
+        department_id:''
       };
     },
 
@@ -148,6 +159,7 @@
       this.infordata();
       this.departmentdata();
       this.getsmscode();
+      this.getdepart();
     },
 
     methods: {
@@ -182,7 +194,7 @@
       departmentdata(){
         this.axios.get('/users/departments').then((res)=>{
           this.departdata=res.data.result.list;
-          //console.log(res);
+         // console.log(res);
         }).catch((response)=>{
           console.log(response);
         })
@@ -191,7 +203,7 @@
       getsmscode(){
         this.axios.get('/admin/SmsConfig').then((res)=>{
           this.smsdata=res.data.result.list;
-          console.log(res);
+          //console.log(res);
         }).catch((response)=>{
           console.log(response);
         })
@@ -220,10 +232,29 @@
           console.log(response);
         })
       },
+      //获取部门信息
+      getdepart(){
+        this.axios.get('/users/departments').then((res)=>{
+          this.departmentinfor=res.data.result.list;
+          //console.log(res);
+        }).catch((response)=>{
+          console.log(response);
+        })
+      },
+      //选择各个部门报名的信息
+      selectdiffdepart(){
+        this.axios.post('/users/classify',{
+            department:this.department_id
+        }).then((res)=>{
+          this.usergetdata=res.data.result.list
+          //console.log(res);
+        }).catch((response)=>{
+          console.log(response);
+        })
+      },
       //test
       test(){
-        let time=this.value2.getFullYear()+'年'+(this.value2.getMonth()+1)+'月'+this.value2.getDate()+'日'+this.value2.getHours()+'时'+this.value2.getMinutes()+'分'
-        console.log(time)
+
       }
     },
 

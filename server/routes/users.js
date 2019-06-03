@@ -143,7 +143,7 @@ router.get('/', function (req, res, next) {
 });
 
 //各个部门报名的信息
-router.get('/classify', (req, res, next) => {
+router.post('/classify', (req, res, next) => {
   const department = req.body.department;
   Users.find({
     department: department,
