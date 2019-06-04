@@ -185,7 +185,7 @@
       infordata(){
         this.axios.get('/users/').then((res)=>{
           this.usergetdata=res.data.result.list
-        console.log(res);
+          //console.log(res);
         }).catch((response)=>{
           console.log(response);
         })

@@ -339,7 +339,7 @@ router.get('/mark', (req, res, next) => {
 })
 
 //打分台各部门的报名信息
-router.get('/markdepart', (req, res, next) => {
+router.post('/markdepart', (req, res, next) => {
   const department = req.body.department;
   Users.find({
     department: department,
@@ -358,6 +358,29 @@ router.get('/markdepart', (req, res, next) => {
         result: {
           count: doc.length,
           list: doc
+        }
+      })
+    }
+  })
+})
+
+//根据id查询打分台个人的报名信息
+router.post('/markperson',(req,res,next)=>{
+  var id=mongoose.Types.ObjectId(req.body.id);
+  Users.findOne({
+    '_id':id
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      res.json({
+        status:'0',
+        msg:'',
+        result:{
+          list:doc
         }
       })
     }
