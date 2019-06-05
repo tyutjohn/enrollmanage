@@ -86,12 +86,32 @@
                     <li>专业:{{userinformation.major}}</li>
                     <li>班级:{{userinformation.class}}</li>
                     <li>学号:{{userinformation.schoolNum}}</li>
-                    <li>第一志愿:{{userinformation.department}}</li>
-                    <li>第二志愿:{{userinformation.department2}}</li>
+                    <li>第一志愿:{{getuserpartname(userinformation.department)}}</li>
+                    <li>第二志愿:{{getuserpartname(userinformation.department2)}}</li>
+                    <li>校区:{{userinformation.campus}}</li>
                     <li>个人介绍:{{userinformation.introduce}}</li>
                   </ul>
                 </div>
-                <div class="flex-dir flex-right">test</div>
+                <div class="flex-dir flex-right">
+                  <el-input
+                    type="number"
+                    placeholder="请输入分数"
+                    v-model="score"
+                    maxlength="100"
+                    show-word-limit
+                    clearable
+                  >
+                  </el-input>
+                  <div style="margin: 20px 0;"></div>
+                  <el-input
+                    type="textarea"
+                    placeholder="请输入评价"
+                    v-model="evaluate"
+                    maxlength="50"
+                    show-word-limit
+                  >
+                  </el-input>
+                </div>
               </div>
             </div>
             <div slot="footer" class="dialog-footer">
@@ -128,6 +148,13 @@
   justify-content: space-between;
 }
 
+.flex-right{
+  margin-right:30px
+}
+
+.el-textarea__inner{
+  height: 140px;
+}
 </style>
 
 <script>
@@ -146,7 +173,12 @@
           department_id:'',
         dialogFormVisible: false,//对话框遮罩层是否开启
         formLabelWidth: '120px',//对话框大小
-        userinformation:{}//用户个人信息
+        userinformation:{
+          department:'',
+          department2:''
+        },//用户个人信息
+        score:'',//打分
+        evaluate:''//评价
       };
     },
 
@@ -161,26 +193,27 @@
       //计算个人信息的部门
       getuserpartname(){
         return function(res){
+         // return res;
           switch(res){
-            case 0:
+            case '0':
               return '未填写'
               break;
-            case 1:
+            case '1':
               return '技术组'
               break;
-            case 2:
+            case '2':
               return '设计组'
               break;
-            case 3:
+            case '3':
               return '事务组'
               break;
-            case 4:
+            case '4':
               return '企划组'
               break;
-            case 5:
+            case '5':
               return '外宣组'
               break;
-            case 6:
+            case '6':
               return '采编组'
               break;
           }
@@ -260,7 +293,6 @@
     },
 
     watch: {
-
     }
 
   }
