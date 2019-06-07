@@ -70,13 +70,13 @@
         </template>
         <template slot-scope="scope">
           <el-button type="primary" icon="el-icon-edit" class="search" @click="selEnrollButton(scope.row._id)">开始打分</el-button>
+          <el-button type="danger" icon="el-icon-brush" circle @click="enrollLoading(scope.row._id)"></el-button>
+          <el-button type="warning" icon="el-icon-s-tools" circle @click="userAdjust(scope.row._id)"></el-button>
           <el-dialog :visible.sync="dialogFormVisible">
             <div slot="title" class="dialog-title">{{userinformation.name}}的个人报名信息</div>
             <div>
               <el-button-group>
                 <el-button type="primary" icon="el-icon-edit" plain>资料</el-button>
-                <el-button type="primary" icon="el-icon-share" plain>转部门</el-button>
-                <el-button type="primary" icon="el-icon-delete" plain>延迟面试</el-button>
               </el-button-group>
               <div class="flex">
                 <div class="flex-dir flex-left">
@@ -90,6 +90,7 @@
                     <li>第二志愿:{{getuserpartname(userinformation.department2)}}</li>
                     <li>校区:{{userinformation.campus}}</li>
                     <li>个人介绍:{{userinformation.introduce}}</li>
+                    <li style="display:none" id='userId'>{{userinformation._id}}</li>
                   </ul>
                 </div>
                 <div class="flex-dir flex-right">
@@ -116,7 +117,7 @@
             </div>
             <div slot="footer" class="dialog-footer">
               <el-button @click="dialogFormVisible = false">取 消</el-button>
-              <el-button type="primary" @click="dialogFormVisible = false">确 定</el-button>
+              <el-button type="primary" @click="enrollScore()">确 定</el-button>
             </div>
           </el-dialog>
         </template>
@@ -290,6 +291,72 @@
           console.log(response);
         });
       },
+      //面试评价和打分提交
+      enrollScore(){
+        var id=document.querySelector('#userId').innerHTML;
+        this.axios.post('/users/enrollScore',{
+          score:this.score,
+          evaluate:this.evaluate,
+          id:id
+        }).then((res)=>{
+          if(res.data.status=='0'){
+            this.dialogFormVisible = false;
+            this.enrollAll();
+          }
+        }).catch((response)=>{
+          console.log(response);
+        })
+      },
+      //面试延迟
+      enrollLoading(event){
+        this.$confirm('是否延迟该同学的面试?','警告',{
+          confirmButtonText:'确定',
+          cancelButtonText:'取消',
+          type:'warning'
+        }).then(()=>{
+          this.axios.post('/users/loading',{
+            id:event
+          }).then((res)=>{
+            this.$message({
+              type:'success',
+              message:res.data.msg
+            });
+            this.enrollAll();
+          }).catch((response)=>{
+            console.log(response);
+          })
+        }).catch(()=>{
+          this.$message({
+            type:'info',
+            message:'已取消延迟面试'
+          })
+        })
+      },
+      //转部门
+      userAdjust(event){
+        this.$confirm('是否将此同学转至第二志愿面试?','警告',{
+          confirmButtonText:'确定',
+          cancelButtonText:'取消',
+          type:'warning'
+        }).then(()=>{
+          this.axios.post('/users/adjust',{
+            id:event
+          }).then((res)=>{
+            this.$message({
+              type:'success',
+              message:res.data.msg
+            });
+            this.enrollAll();
+          }).catch((response)=>{
+            console.log(response);
+          })
+        }).catch(()=>{
+          this.$message({
+            type:'info',
+            message:'已取消调剂面试'
+          })
+        })
+      }
     },
 
     watch: {

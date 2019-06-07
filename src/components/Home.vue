@@ -38,7 +38,6 @@
                 </el-menu>
             </el-aside>
             <el-main>
-              <!-- <nav-inform></nav-inform> -->
               <router-view></router-view>
             </el-main>
         </el-container>
@@ -59,7 +58,6 @@
     background-color: #E9EEF3;
     color: #333;
     text-align: center;
-    height:700px;
   }
   
   body > .el-container {

@@ -392,39 +392,53 @@ router.post('/enrollScore', (req, res, next) => {
   var score = req.body.score;
   var evaluate = req.body.evaluate;
   var id = mongoose.Types.ObjectId(req.body.id);
-  Users.findOne({
-    '_id': id
-  }, (err, doc) => {
-    if (err) {
-      res.json({
-        status: '1',
-        msg: err.message
-      })
-    } else {
-      Users.update({
+  if(!score==''){
+    if(!evaluate==''){
+      Users.findOne({
         '_id': id
-      }, {
-        $set: {
-          'score': score,
-          'evaluate': evaluate,
-          'state2': '1'
-        }
-      }, (err, docs) => {
+      }, (err, doc) => {
         if (err) {
           res.json({
             status: '1',
             msg: err.message
           })
         } else {
-          res.json({
-            status: '0',
-            msg: '打分成功',
-            result: ''
+          Users.update({
+            '_id': id
+          }, {
+            $set: {
+              'score': score,
+              'evaluate': evaluate,
+              'state2': '1'
+            }
+          }, (err, docs) => {
+            if (err) {
+              res.json({
+                status: '1',
+                msg: err.message
+              })
+            } else {
+              res.json({
+                status: '0',
+                msg: '打分成功',
+                result: ''
+              })
+            }
           })
         }
       })
+    }else{
+      res.json({
+        status:'1001',
+        msg:'未填写评价'
+      })
     }
-  })
+  }else{
+    res.json({
+      status:'1001',
+      msg:'未填写分数'
+    })
+  }
 })
 
 //延迟面试
@@ -479,27 +493,34 @@ router.post('/adjust', (req, res, next) => {
       var newdepartment = '';
       doc.forEach((item, index) => {
         newdepartment = item.department2;
-        Users.update({
-          '_id': id
-        }, {
-          $set: {
-            'state': '0',
-            'department': newdepartment,
-            'department2': ''
-          }
-        }, (err, docs) => {
-          if (err) {
-            res.json({
-              status: '1',
-              msg: err.message
-            })
-          } else {
-            res.json({
-              status: '0',
-              msg: '转部门成功'
-            })
-          }
-        })
+        if(newdepartment=='0'){
+          res.json({
+            status:'1001',
+            msg:'未填报第二志愿'
+          })
+        }else{
+          Users.update({
+            '_id': id
+          }, {
+            $set: {
+              'state': '0',
+              'department': newdepartment,
+              'department2': '0'
+            }
+          }, (err, docs) => {
+            if (err) {
+              res.json({
+                status: '1',
+                msg: err.message
+              })
+            } else {
+              res.json({
+                status: '0',
+                msg: '转部门成功'
+              })
+            }
+          })
+        }
       })
     }
   })
