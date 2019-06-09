@@ -551,7 +551,7 @@ router.get('/ainterview', (req, res, next) => {
 })
 
 //已经面试的各部门的信息
-router.get('/ainterdepart', (req, res, next) => {
+router.post('/ainterdepart', (req, res, next) => {
   var department = req.body.department;
   Users.find({
     'state2': '1',

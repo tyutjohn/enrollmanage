@@ -61,7 +61,7 @@
         <template slot="header" slot-scope="scope">
             <el-select v-model="department_id" placeholder="请选择查看的部门" @change="selectdiffdepart()">
               <el-option
-                v-for="item in departmentinfor"
+                v-for="item in departdata"
                 :key="item.department_id"
                 :label="item.department_name"
                 :value="item.department_id">
@@ -135,9 +135,6 @@
         value2:'',//时间
         smsdata:{},//短信配置
         phones:'',//选中手机号
-        departmentinfor:{
-          department_name:'',
-        },//各部门信息
         department_id:''
       };
     },
@@ -157,9 +154,7 @@
 
     mounted() {
       this.infordata();
-      this.departmentdata();
       this.getsmscode();
-      this.getdepart();
     },
 
     methods: {
@@ -228,15 +223,6 @@
           console.log(res)
         },(error)=>{
           console.log(error);
-        }).catch((response)=>{
-          console.log(response);
-        })
-      },
-      //获取部门信息
-      getdepart(){
-        this.axios.get('/users/departments').then((res)=>{
-          this.departmentinfor=res.data.result.list;
-          //console.log(res);
         }).catch((response)=>{
           console.log(response);
         })
