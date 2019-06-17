@@ -120,7 +120,9 @@ router.post('/sendmsg', (req, res, next) => {
 });
 
 //全部报名个人信息
-router.get('/', function (req, res, next) {
+router.post('/', function (req, res, next) {
+  let page=req.body.page;
+  let pageSize=req.body.pageSize;
   Users.find({
     'state': '0'
   }, (err, doc) => {
@@ -130,16 +132,21 @@ router.get('/', function (req, res, next) {
         msg: err.message
       })
     } else {
-      res.json({
-        status: '0',
-        msg: '',
-        result: {
-          count: doc.length,
-          list: doc
-        }
+      Users.where({'state':'0'}).count((err,count)=>{
+        let countlen=count;
+        res.json({
+          status: '0',
+          msg: '',
+          result: {
+            count: countlen,
+            list: doc
+          }
+        })
       })
     }
-  })
+  }).limit(1*pageSize)//读取条数
+  .skip(10*page);//跳过的条数
+
 });
 
 //各个部门报名的信息
@@ -860,7 +867,28 @@ router.post('/userfind', (req, res, next) => {
 
 //test
 router.post('/test', (req, res, next) => {
-
+  let page=req.body.page;
+  let pageSize=req.body.pageSize;
+  Users.find({
+    'state': '0'
+  }, (err, doc) => {
+    if (err) {
+      res.json({
+        status: '1',
+        msg: err.message
+      })
+    } else {
+      res.json({
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc
+        }
+      })
+    }
+  }).limit(1*pageSize)//读取条数
+  .skip(10*page);//跳过的条数
 })
 
 

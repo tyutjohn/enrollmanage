@@ -2,7 +2,7 @@
   <div>
       <el-table
       ref="multipleTable"
-      :data="usergetdata"
+      :data="usergetdata.list"
       tooltip-effect="dark"
       style="width: 100%"
       stripe
@@ -70,7 +70,16 @@
         </template>
       </el-table-column>
     </el-table>
-    <div style="margin-top: 10px" class="main-bottom">
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage4"
+      :page-sizes="[10,20,50,100]"
+      :page-size="100"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="usergetdata.count">
+    </el-pagination>
+    <div class="main-bottom">
       <div class="bottom-left">
         <el-select v-model="value" filterable placeholder="请选择发送签名模板">
           <el-option
@@ -135,7 +144,10 @@
         value2:'',//时间
         smsdata:{},//短信配置
         phones:'',//选中手机号
-        department_id:''
+        department_id:'',
+        currentPage4:4,//页
+        pageSize:'',//每页的条数
+        page:'',//选择页数
       };
     },
 
@@ -178,8 +190,11 @@
       },
       //获取全部信息
       infordata(){
-        this.axios.get('/users/').then((res)=>{
-          this.usergetdata=res.data.result.list
+        this.axios.post('/users/',{
+          page:this.page,
+          pageSize:this.pageSize
+        }).then((res)=>{
+          this.usergetdata=res.data.result
           //console.log(res);
         }).catch((response)=>{
           console.log(response);
@@ -232,15 +247,26 @@
         this.axios.post('/users/classify',{
             department:this.department_id
         }).then((res)=>{
-          this.usergetdata=res.data.result.list
+          this.usergetdata=res.data.result
           //console.log(res);
         }).catch((response)=>{
           console.log(response);
         })
       },
+      //分页
+      handleSizeChange(val) {
+        this.pageSize=val;
+       // console.log(`每页 ${val} 条`);
+        this.infordata();
+      },
+      handleCurrentChange(val) {
+        this.page=val-1;
+       // console.log(`当前页: ${val}`);
+        this.infordata();
+      },
       //test
       test(){
-
+  
       }
     },
 
