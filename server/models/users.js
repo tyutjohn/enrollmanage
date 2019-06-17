@@ -12,7 +12,7 @@ var produtSchema=new Schema({
     'department':String,
     'department2':String,
     'state':String,
-    'score':String,
+    'score':Number,
     'evaluate':String,
     'state2':String,
     'pass':String,

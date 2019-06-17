@@ -2,12 +2,12 @@
   <div>
      <el-table
       ref="multipleTable"
-      :data="usergetdata"
+      :data="usergetdata.list"
       tooltip-effect="dark"
       style="width: 100%"
       stripe
       border
-      height="600px"
+      height="620px"
       @selection-change="handleSelectionChange">
       <el-table-column
       type="index"
@@ -123,6 +123,15 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      @size-change="handleSizeChange"
+      @current-change="handleCurrentChange"
+      :current-page="currentPage"
+      :page-sizes="[10,20,50,100]"
+      :page-size="100"
+      layout="total, sizes, prev, pager, next, jumper"
+      :total="usergetdata.count">
+    </el-pagination>
   </div>
 </template>
 <style>
@@ -176,7 +185,11 @@
           department2:''
         },//用户个人信息
         score:'',//打分
-        evaluate:''//评价
+        evaluate:'',//评价
+        currentPage:4,//页
+        pageSize:'',//每页的条数
+        page:'',//选择页数
+        judge:false//判断全部还是分类
       };
     },
 
@@ -238,9 +251,12 @@
       },
       //获取全部面试者信息
       enrollAll(){
-        this.axios.get('/users/mark').then((res)=>{
-          this.usergetdata=res.data.result.list;
-          console.log(res);
+        this.axios.post('/users/mark',{
+          page:this.page,
+          pageSize:this.pageSize
+        }).then((res)=>{
+          this.usergetdata=res.data.result;
+          //console.log(res);
         }).catch((response)=>{
           console.log(response);
         })
@@ -257,10 +273,13 @@
       //选择各个部门报名的信息
       selectdiffdepart(){
         this.axios.post('/users/markdepart',{
-            department:this.department_id
+            department:this.department_id,
+            page:this.page,
+            pageSize:this.pageSize
         }).then((res)=>{
-          this.usergetdata=res.data.result.list
-          console.log(res);
+          this.usergetdata=res.data.result;
+          this.judge=true;
+          //console.log(res);
         }).catch((response)=>{
           console.log(response);
         })
@@ -342,7 +361,26 @@
             message:'已取消调剂面试'
           })
         })
-      }
+      },
+      //分页
+      handleSizeChange(val) {
+        this.pageSize=val;
+       // console.log(`每页 ${val} 条`);
+       if(this.judge){
+         this.selectdiffdepart();
+       }else{
+        this.enrollAll();
+       }
+      },
+      handleCurrentChange(val) {
+        this.page=val-1;
+       // console.log(`当前页: ${val}`);
+       if(this.judge){
+         this.selectdiffdepart();
+       }else{
+         this.enrollAll();
+       }
+      },
     },
 
     watch: {

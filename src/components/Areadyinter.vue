@@ -75,6 +75,19 @@
         </template>
       </el-table-column>
     </el-table>
+    <div class="main-bottom">
+      <div class="bottom-left">
+        
+      </div>
+      <div>
+        <el-button @click="toggleSelection()">取消全部</el-button>
+        <el-button 
+        type="primary" 
+        round 
+        style='margin-right:100px;margin-top:20px' 
+        @click="sendSms()">发送</el-button>
+      </div>
+    </div>
   </div>
 </template>
 <style>
@@ -151,7 +164,21 @@
         }).catch((response)=>{
           console.log(response);
         })
-      }
+      },
+      //取消全选
+      toggleSelection(rows) {
+        if (rows) {
+          rows.forEach(row => {
+            this.$refs.multipleTable.toggleRowSelection(row);
+          });
+        } else {
+          this.$refs.multipleTable.clearSelection();
+        }
+      },
+      //发送短信
+      sendSms(){
+
+      },
     },
 
     watch: {}

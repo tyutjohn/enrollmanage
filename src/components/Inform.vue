@@ -148,6 +148,7 @@
         currentPage4:4,//页
         pageSize:'',//每页的条数
         page:'',//选择页数
+        judge:false//判断全部还是分类
       };
     },
 
@@ -245,9 +246,12 @@
       //选择各个部门报名的信息
       selectdiffdepart(){
         this.axios.post('/users/classify',{
-            department:this.department_id
+            department:this.department_id,
+            page:this.page,
+            pageSize:this.pageSize
         }).then((res)=>{
-          this.usergetdata=res.data.result
+          this.usergetdata=res.data.result;
+          this.judge=true;
           //console.log(res);
         }).catch((response)=>{
           console.log(response);
@@ -257,12 +261,20 @@
       handleSizeChange(val) {
         this.pageSize=val;
        // console.log(`每页 ${val} 条`);
+       if(this.judge){
+         this.selectdiffdepart();
+       }else{
         this.infordata();
+       }
       },
       handleCurrentChange(val) {
         this.page=val-1;
        // console.log(`当前页: ${val}`);
-        this.infordata();
+       if(this.judge){
+         this.selectdiffdepart();
+       }else{
+         this.infordata();
+       }
       },
       //test
       test(){

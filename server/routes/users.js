@@ -146,11 +146,12 @@ router.post('/', function (req, res, next) {
     }
   }).limit(1*pageSize)//读取条数
   .skip(10*page);//跳过的条数
-
 });
 
 //各个部门报名的信息
 router.post('/classify', (req, res, next) => {
+  let page=req.body.page;
+  let pageSize=req.body.pageSize;
   const department = req.body.department;
   Users.find({
     department: department,
@@ -162,16 +163,20 @@ router.post('/classify', (req, res, next) => {
         msg: err.message,
       })
     } else {
-      res.json({
-        status: '0',
-        msg: 'suc',
-        result: {
-          count: doc.length,
-          list: doc
-        }
+      Users.where({'state':'0','department':department}).count((err,count)=>{
+        let countlen=count;
+        res.json({
+          status: '0',
+          msg: '',
+          result: {
+            count: countlen,
+            list: doc
+          }
+        })
       })
     }
-  })
+  }).limit(1*pageSize)//读取条数
+  .skip(10*page);//跳过的条数
 })
 
 //报名接口
@@ -322,7 +327,9 @@ router.get('/departments', (req, res, next) => {
 });
 
 //打分台全部的报名信息
-router.get('/mark', (req, res, next) => {
+router.post('/mark', (req, res, next) => {
+  let page=req.body.page;
+  let pageSize=req.body.pageSize;
   Users.find({
     state: '1',
     state2: '0'
@@ -333,20 +340,26 @@ router.get('/mark', (req, res, next) => {
         mag: err.message
       })
     } else {
-      res.json({
-        status: '0',
-        msg: '',
-        result: {
-          count: doc.length,
-          list: doc
-        }
+      Users.where({'state':'1','state2':'0'}).count((err,count)=>{
+        let countlen=count;
+        res.json({
+          status: '0',
+          msg: '',
+          result: {
+            count: countlen,
+            list: doc
+          }
+        })
       })
     }
-  })
+  }).limit(1*pageSize)//读取条数
+  .skip(10*page);//跳过的条数
 })
 
 //打分台各部门的报名信息
 router.post('/markdepart', (req, res, next) => {
+  let page=req.body.page;
+  let pageSize=req.body.pageSize;
   const department = req.body.department;
   Users.find({
     department: department,
@@ -359,16 +372,20 @@ router.post('/markdepart', (req, res, next) => {
         msg: err.message
       })
     } else {
-      res.json({
-        status: '0',
-        msg: '',
-        result: {
-          count: doc.length,
-          list: doc
-        }
+      Users.where({'state':'1','state2':'0','department':department}).count((err,count)=>{
+        let countlen=count;
+        res.json({
+          status: '0',
+          msg: '',
+          result: {
+            count: countlen,
+            list: doc
+          }
+        })
       })
     }
-  })
+  }).limit(1*pageSize)//读取条数
+  .skip(10*page);//跳过的条数
 })
 
 //根据id查询打分台个人的报名信息
@@ -534,7 +551,9 @@ router.post('/adjust', (req, res, next) => {
 })
 
 //已经面试的全部信息
-router.get('/ainterview', (req, res, next) => {
+router.post('/ainterview', (req, res, next) => {
+  let page=req.body.page;
+  let pageSize=req.body.pageSize;
   Users.find({
     'state2': '1',
     'pass': ''
@@ -545,21 +564,28 @@ router.get('/ainterview', (req, res, next) => {
         msg: err.message
       })
     } else {
-      res.json({
-        status: '0',
-        msg: '',
-        result: {
-          count: doc.length,
-          list: doc
-        }
+      Users.where({'state2':'1','pass':''}).count((err,count)=>{
+        let countlen=count;
+        res.json({
+          status: '0',
+          msg: '',
+          result: {
+            count: countlen,
+            list: doc
+          }
+        })
       })
     }
-  })
+  }).sort({'score':-1})
+  .limit(1*pageSize)//读取条数
+  .skip(10*page);//跳过的条数
 })
 
 //已经面试的各部门的信息
 router.post('/ainterdepart', (req, res, next) => {
-  var department = req.body.department;
+  let page=req.body.page;
+  let pageSize=req.body.pageSize;
+  let department = req.body.department;
   Users.find({
     'state2': '1',
     'department': department,
@@ -571,16 +597,21 @@ router.post('/ainterdepart', (req, res, next) => {
         msg: err.message
       })
     } else {
-      res.json({
-        status: '0',
-        msg: '',
-        result: {
-          count: doc.length,
-          list: doc
-        }
+      Users.where({'state2':'1','pass':'','department':department}).count((err,count)=>{
+        let countlen=count;
+        res.json({
+          status: '0',
+          msg: '',
+          result: {
+            count: countlen,
+            list: doc
+          }
+        })
       })
     }
-  })
+  }).sort({'score':-1})
+  .limit(1*pageSize)//读取条数
+  .skip(10*page);//跳过的条数
 })
 
 //未录取短信通知
