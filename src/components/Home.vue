@@ -20,7 +20,6 @@
                     </template>
                     <el-menu-item-group>
                     <el-menu-item index="1-1">通知面试</el-menu-item>
-                    </el-menu-item-group>
                     <el-menu-item index="1-2">面试打分</el-menu-item>
                     </el-menu-item-group>     
                 </el-submenu>
@@ -31,10 +30,18 @@
                     </template>
                     <el-menu-item-group>
                     <el-menu-item index="2-1">已面试</el-menu-item>
-                    </el-menu-item-group>
                     <el-menu-item index="2-2">已录取</el-menu-item>
+                    <el-menu-item index="2-3">未录取</el-menu-item>
                     </el-menu-item-group>     
-                </el-submenu>       
+                </el-submenu>   
+                <el-submenu index="3">
+                  <template slot="title">
+                    <i class="el-icon-setting"></i>
+                    <span>管理员控制台</span>
+                  </template>
+                  <el-menu-item index="3-1">管理员</el-menu-item>
+                  <el-menu-item index="3-2">系统配置设置</el-menu-item>
+                </el-submenu>    
                 </el-menu>
             </el-aside>
             <el-main>
@@ -135,6 +142,15 @@
             break;
           case '2-2':
             this.$router.push('/Areadyenroll');
+            break;
+          case '2-3':
+            this.$router.push('/Nopass');
+            break;
+          case '3-1':
+            this.$router.push('/Admin');
+            break;
+          case '3-2':
+            this.$router.push('/Adminsetting');
             break;
         }
       }

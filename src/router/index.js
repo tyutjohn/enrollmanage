@@ -6,6 +6,9 @@ import Inform from '@/components/Inform'
 import Viewscore from '@/components/Viewscore'
 import Areadyinter from '@/components/Areadyinter'
 import Areadyenroll from '@/components/Areadyenroll'
+import Nopass from '@/components/Nopass'
+import Admin from '@/components/Admin'
+import Adminsetting from '@/components/Adminsetting'
 
 Vue.use(Router)
 
@@ -32,6 +35,18 @@ export default new Router({
           path:'/areadyenroll',
           name:'Areadyenroll',
           component:Areadyenroll
+        },{
+          path:'/nopass',
+          name:'Nopass',
+          component:Nopass
+        },{
+          path:'/admin',
+          name:'Admin',
+          component:Admin
+        },{
+          path:'/adminsetting',
+          name:'Adminsetting',
+          component:Adminsetting
         }
       ]
     

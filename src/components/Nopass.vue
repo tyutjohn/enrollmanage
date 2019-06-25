@@ -119,7 +119,7 @@
       },
       //获取全部信息
       infordata(){
-        this.axios.post('/users/admitall',{
+        this.axios.post('/users/admitnopass',{
           page:this.page,
           pageSize:this.pageSize
         }).then((res)=>{
@@ -138,9 +138,9 @@
           console.log(response);
         })
       },
-      //选择各个部门已录取的信息
+      //选择各个部门未录取的信息
       selectdiffdepart(){
-        this.axios.post('/users/admitdepart',{
+        this.axios.post('/users/admitnopassdep',{
             department:this.department_id,
             page:this.page,
             pageSize:this.pageSize

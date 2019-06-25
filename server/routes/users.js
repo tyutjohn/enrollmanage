@@ -758,7 +758,9 @@ router.post('/sendmsgpass', (req, res, next) => {
 })
 
 //已经录取的全部信息
-router.get('/admitall', (req, res, next) => {
+router.post('/admitall', (req, res, next) => {
+  let page=req.body.page;
+  let pageSize=req.body.pageSize;
   Users.find({
     'pass': '1'
   }, (err, doc) => {
@@ -768,21 +770,28 @@ router.get('/admitall', (req, res, next) => {
         msg: err.message
       })
     } else {
-      res.json({
-        status: '0',
-        msg: '',
-        result: {
-          count: doc.length,
-          list: doc
-        }
+      Users.where({'pass':'1'}).count((err,count)=>{
+        let countlen=count;
+        res.json({
+          status: '0',
+          msg: '',
+          result: {
+            count: countlen,
+            list: doc
+          }
+        })
       })
     }
-  })
+  }).sort({'score':-1})
+  .limit(1*pageSize)//读取条数
+  .skip(10*page);//跳过的条数
 })
 
 //已经录取的各个部门的信息
-router.get('/admitdepart', (req, res, next) => {
-  var department = req.body.department;
+router.post('/admitdepart', (req, res, next) => {
+  let page=req.body.page;
+  let pageSize=req.body.pageSize;
+  let department = req.body.department;
   Users.find({
     'pass': '1',
     'department': department
@@ -793,20 +802,27 @@ router.get('/admitdepart', (req, res, next) => {
         msg: err.message
       })
     } else {
-      res.json({
-        status: '0',
-        msg: '',
-        result: {
-          count: doc.length,
-          list: doc
-        }
+      Users.where({'pass':'1','department':department}).count((err,count)=>{
+        let countlen=count;
+        res.json({
+          status: '0',
+          msg: '',
+          result: {
+            count: countlen,
+            list: doc
+          }
+        })
       })
     }
-  })
+  }).sort({'score':-1})
+  .limit(1*pageSize)//读取条数
+  .skip(10*page);//跳过的条数
 })
 
 //未录取的信息
-router.get('/admitnopass', (req, res, next) => {
+router.post('/admitnopass', (req, res, next) => {
+  let page=req.body.page;
+  let pageSize=req.body.pageSize;
   Users.find({
     'pass': '0'
   }, (err, doc) => {
@@ -816,16 +832,53 @@ router.get('/admitnopass', (req, res, next) => {
         msg: err.message
       })
     } else {
-      res.json({
-        status: '0',
-        msg: '',
-        result: {
-          count: doc.length,
-          list: doc
-        }
+      Users.where({'pass':'0'}).count((err,count)=>{
+        let countlen=count;
+        res.json({
+          status: '0',
+          msg: '',
+          result: {
+            count: countlen,
+            list: doc
+          }
+        })
       })
     }
-  })
+  }).sort({'score':-1})
+  .limit(1*pageSize)//读取条数
+  .skip(10*page);//跳过的条数
+})
+
+//未录取各个部门的信息
+router.post('/admitnopassdep',(req,res,next)=>{
+  let page=req.body.page;
+  let pageSize=req.body.pageSize;
+  let department = req.body.department;
+  Users.find({
+    'pass':'0',
+    'department':department
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      Users.where({'pass':'0','department':department}).count((err,count)=>{
+        let countlen=count;
+        res.json({
+          status: '0',
+          msg: '',
+          result: {
+            count: countlen,
+            list: doc
+          }
+        })
+      })
+    }
+  }).sort({'score':-1})
+  .limit(1*pageSize)//读取条数
+  .skip(10*page);//跳过的条数
 })
 
 //查询结果
@@ -899,28 +952,7 @@ router.post('/userfind', (req, res, next) => {
 
 //test
 router.post('/test', (req, res, next) => {
-  let page=req.body.page;
-  let pageSize=req.body.pageSize;
-  Users.find({
-    'state': '0'
-  }, (err, doc) => {
-    if (err) {
-      res.json({
-        status: '1',
-        msg: err.message
-      })
-    } else {
-      res.json({
-        status: '0',
-        msg: '',
-        result: {
-          count: doc.length,
-          list: doc
-        }
-      })
-    }
-  }).limit(1*pageSize)//读取条数
-  .skip(10*page);//跳过的条数
+  
 })
 
 
