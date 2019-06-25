@@ -70,15 +70,17 @@
         </template>
       </el-table-column>
     </el-table>
-    <el-pagination
-      @size-change="handleSizeChange"
-      @current-change="handleCurrentChange"
-      :current-page="currentPage4"
-      :page-sizes="[10,20,50,100]"
-      :page-size="100"
-      layout="total, sizes, prev, pager, next, jumper"
-      :total="usergetdata.count">
-    </el-pagination>
+    <div class="bottom-top">
+        <el-pagination
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+          :current-page="currentPage4"
+          :page-sizes="[10,20,50,100]"
+          :page-size="100"
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="usergetdata.count">
+        </el-pagination>
+      </div>
     <div class="main-bottom">
       <div class="bottom-left">
         <el-select v-model="value" filterable placeholder="请选择发送签名模板">
@@ -118,10 +120,15 @@
 .el-table--border {
     padding-left: 20px;
     padding-top:20px;
+    padding-bottom:20px;
 }
 .main-bottom{
   display:flex;
   justify-content: space-between ;
+}
+
+.bottom-top{
+  margin:0 auto;
 }
 
 .bottom-left{

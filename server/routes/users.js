@@ -433,7 +433,8 @@ router.post('/enrollScore', (req, res, next) => {
             $set: {
               'score': score,
               'evaluate': evaluate,
-              'state2': '1'
+              'state2': '1',
+              'pass':''
             }
           }, (err, docs) => {
             if (err) {
