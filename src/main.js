@@ -9,7 +9,7 @@ import Vuex from 'vuex'
 import VueLazyload from 'vue-lazyload'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
-import {Button,Select} from 'element-ui';
+
 
 // Vue.components(Button.name,Button);
 // Vue.components(Select.name,Select);

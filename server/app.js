@@ -25,21 +25,21 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //拦截未登陆
-app.use((req,res,next)=>{
-  if(req.cookies.userId){
-    next();
-  }else{
-    if(req.originalUrl=='/admin/login'|| req.originalUrl=='/admin/logout'|| req.originalUrl=='/users/apply'){
-      next();
-    }else{
-      res.json({
-        status:'10001',
-        msg:'当前未登陆',
-        result:''
-      });
-    }
-  }
-});
+// app.use((req,res,next)=>{
+//   if(req.body.username){
+//     next();
+//   }else{
+//     if(req.originalUrl=='/admin/login'|| req.originalUrl=='/admin/logout'|| req.originalUrl=='/users/apply'){
+//       next();
+//     }else{
+//       res.json({
+//         status:'10001',
+//         msg:'当前未登陆',
+//         result:''
+//       });
+//     }
+//   }
+// });
 
 app.use('/', index);
 app.use('/users',users);

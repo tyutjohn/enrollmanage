@@ -56,17 +56,20 @@
                 name:this.formLabelAlign.name,
                 pwd:this.formLabelAlign.password
             }).then((res)=>{
-                console.log(res);
-                let cookie=document.cookie.indexOf('userId');
-                if(cookie>-1){
-                    this.$router.replace('/')
-                }else{
-                    console.log('no router');
-                }
+                window.localStorage.setItem('token',res.data.result.token);
+                window.localStorage.setItem('username',res.data.result.userName);
+                this.$router.replace('/');
+                //let cookie=document.cookie.indexOf('userId');
+                // if(cookie>-1){
+                //     this.$router.replace('/')
+                // }else{
+                //     console.log('no router');
+                // }
+               // this.logintoken();
             }).catch((result)=>{
                 console.log(result);
             })
-        }
+        },
     },
 
     watch: {}

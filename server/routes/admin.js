@@ -4,8 +4,13 @@ const Admin = require('./../models/admin');
 const crypto = require('crypto');
 const md5 = crypto.createHash('md5');
 const Sms = require('../models/Sms');
-var mongoose = require('mongoose');
+const mongoose = require('mongoose');
 const Config=require('./../models/config');
+const token=require('../util/token');
+const jwt=require('jsonwebtoken')
+
+//console.log(token.createToken('john','admin','7','days'));
+
 //管理员个人信息
 router.get('/', (req, res, next) => {
   Admin.find({}, (err, doc) => {
@@ -33,32 +38,88 @@ router.get('/', (req, res, next) => {
 
 //管理员登陆
 router.post('/login', (req, res, next) => {
-  var param = {
+  let accesstoken=token.createToken(req.body.name,req.body.pwd,'1','day');
+  let param = {
     name: req.body.name,
     pwd: req.body.pwd
   }
   Admin.findOne(param, (err, doc) => {
     if (doc) {
-      // res.cookie("userId",md5.update(doc.id*Math.random(1000)).digest('hex'),{
-      let cookienum = md5.update(doc.id).digest('hex')
-      res.cookie("userId", cookienum, {
-        path: '/',
-        maxAge: 2000 * 60 * 60
-      });
+      // let cookienum = md5.update(doc.id).digest('hex')
+      // res.cookie("userId", cookienum, {
+      //   path: '/',
+      //   maxAge: 2000 * 60 * 60
+      // });
       //req.session.user = doc;
-      res.json({
-        status: '0',
-        msg: 'success',
-        result: {
-          userName: doc.name
+      Admin.update({
+        'name':req.body.name
+      },{
+        $set:{
+          'accesstoken':accesstoken
         }
-      });
+      },(err,docs)=>{
+        if(err){
+          res.json({
+            status:'1',
+            msg:err.message
+          })
+        }else{
+          res.json({
+            status:'0',
+            msg:'登陆成功',
+            result:{
+              list:docs,
+              token:accesstoken,
+              userName: doc.name
+            }
+          })
+        }
+      })
+      console.log(accesstoken);
     } else {
       res.json({
         status: '1001',
         msg: '用户名或密码错误',
         result: ''
       })
+    }
+  })
+})
+
+//检验token
+router.post('/checktoken',(req,res,next)=>{
+  let username=req.body.username,
+      accesstoken=req.body.token;
+  Admin.findOne({
+    'name':username,
+    'accesstoken':accesstoken
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+        let secret=token.secret;
+        jwt.verify(accesstoken,secret,(err,docs)=>{
+          if(err){
+            res.json({
+              status:'1',
+              msg:'验证失败',
+              result:{
+                err:err.message
+              }
+            })
+          }else{
+            res.json({
+              status:'0',
+              msg:'校验成功',
+              result:{
+                list:docs,
+              }
+            })
+          }
+        })
     }
   })
 })
