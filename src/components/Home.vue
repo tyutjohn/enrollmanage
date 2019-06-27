@@ -119,7 +119,7 @@
     beforeMount() {},
 
     mounted() {
-      
+      this.test();
     },
 
     methods: {
@@ -153,6 +153,9 @@
             this.$router.push('/Adminsetting');
             break;
         }
+      },
+      test(){
+        
       }
     },
 

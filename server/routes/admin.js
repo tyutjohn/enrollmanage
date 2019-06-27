@@ -38,7 +38,7 @@ router.get('/', (req, res, next) => {
 
 //管理员登陆
 router.post('/login', (req, res, next) => {
-  let accesstoken=token.createToken(req.body.name,req.body.pwd,'1','day');
+  let accesstoken=token.createToken(req.body.name,req.body.pwd,'1','hour');
   let param = {
     name: req.body.name,
     pwd: req.body.pwd

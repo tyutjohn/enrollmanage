@@ -28,6 +28,8 @@
 
 </style>
 <script>
+  import Cookies from 'js-cookie';
+
   export default {
     data() {
       return {
@@ -56,16 +58,12 @@
                 name:this.formLabelAlign.name,
                 pwd:this.formLabelAlign.password
             }).then((res)=>{
+                let username=res.data.result.userName;
                 window.localStorage.setItem('token',res.data.result.token);
-                window.localStorage.setItem('username',res.data.result.userName);
+                window.localStorage.setItem('username',username);
+                this.$store.dispatch('SaveLoginIfno',username);
+                Cookies.set('username',username,{expires:1});//设置接口有效期
                 this.$router.replace('/');
-                //let cookie=document.cookie.indexOf('userId');
-                // if(cookie>-1){
-                //     this.$router.replace('/')
-                // }else{
-                //     console.log('no router');
-                // }
-               // this.logintoken();
             }).catch((result)=>{
                 console.log(result);
             })

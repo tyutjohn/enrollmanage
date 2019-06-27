@@ -1,6 +1,5 @@
 var express = require('express');
 var path = require('path');
-var favicon = require('serve-favicon');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
@@ -16,7 +15,6 @@ app.set('views', path.join(__dirname, 'views'));
 app.engine('.html',ejs.__express);
 app.set('view engine', 'html');
 
-// uncomment after placing your favicon in /public
 //app.use(favicon(path.join(__dirname, 'public', 'favicon.ico')));
 app.use(logger('dev'));
 app.use(bodyParser.json());
@@ -25,21 +23,21 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 //拦截未登陆
-// app.use((req,res,next)=>{
-//   if(req.body.username){
-//     next();
-//   }else{
-//     if(req.originalUrl=='/admin/login'|| req.originalUrl=='/admin/logout'|| req.originalUrl=='/users/apply'){
-//       next();
-//     }else{
-//       res.json({
-//         status:'10001',
-//         msg:'当前未登陆',
-//         result:''
-//       });
-//     }
-//   }
-// });
+app.use((req,res,next)=>{
+  if(req.cookies.username){
+    next();
+  }else{
+    if(req.originalUrl=='/admin/login'|| req.originalUrl=='/admin/logout'|| req.originalUrl=='/users/apply'){
+      next();
+    }else{
+      res.json({
+        status:'10001',
+        msg:'当前未登陆',
+        result:''
+      });
+    }
+  }
+});
 
 app.use('/', index);
 app.use('/users',users);

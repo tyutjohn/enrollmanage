@@ -88,8 +88,6 @@ const router=new Router({
 //路由拦截器
 router.beforeEach((to,from,next)=>{
   console.log('进入守卫');
-  console.log(window.localStorage.getItem('token'));
-  console.log(window.localStorage.getItem('username'));
   if(to.meta.auth){
     if(!window.localStorage.getItem('token')==''){
       next();
