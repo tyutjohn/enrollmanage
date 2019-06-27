@@ -6,7 +6,8 @@ Vue.use(Vuex);
 //创建vuex实例
 const store=new Vuex.Store({
     state:{
-        username:''
+        username:'',
+        rank:''
     },
     getters:{
 

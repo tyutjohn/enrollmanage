@@ -34,7 +34,7 @@
                     <el-menu-item index="2-3">未录取</el-menu-item>
                     </el-menu-item-group>     
                 </el-submenu>   
-                <el-submenu index="3">
+                <el-submenu index="3" v-if="adminconsole">
                   <template slot="title">
                     <i class="el-icon-setting"></i>
                     <span>管理员控制台</span>
@@ -106,7 +106,7 @@
   export default {
     data () {
       return {
-        
+        adminconsole:false
       };
     },
 
@@ -114,12 +114,15 @@
       NavInform
     },
 
-    computed: {},
+    computed: {
+      
+    },
 
     beforeMount() {},
 
     mounted() {
       this.test();
+      this.adminrank();
     },
 
     methods: {
@@ -153,6 +156,23 @@
             this.$router.push('/Adminsetting');
             break;
         }
+      },
+      //获得用户权限
+      adminrank(){
+        let username=window.localStorage.getItem('username');
+        this.axios.post('/admin/adminone',{
+          username:username
+        }).then((res)=>{
+          if(res.data.result.list.rank=='0'){
+            this.show();
+          }
+        }).catch((response)=>{
+          console.log(response);
+        })
+      },
+      //判断管理员模式
+      show(){
+        this.adminconsole=true;
       },
       test(){
         

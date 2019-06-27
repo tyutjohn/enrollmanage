@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
-import Login from '@/components/Login'
+import Loginconsole from '@/components/Loginconsole'
 import Inform from '@/components/Inform'
 import Viewscore from '@/components/Viewscore'
 import Areadyinter from '@/components/Areadyinter'
@@ -12,14 +12,14 @@ import Adminsetting from '@/components/Adminsetting'
 
 Vue.use(Router)
 
-
+//路由添加模块
 const routes=[
     {
       path: '/',
       name: 'Home',
       component: Home,
       meta: {
-        auth: true
+        auth: true,
       },
       children:[
         {
@@ -62,22 +62,22 @@ const routes=[
           name:'Admin',
           component:Admin,
           meta: {
-            auth: true
+            auth: true,
           },
         },{
           path:'/adminsetting',
           name:'Adminsetting',
           component:Adminsetting,
           meta: {
-            auth: true
-          },
+            auth: true,
+          }
         }
       ]
     
     },{
-      path:'/login',
-      name:'Login',
-      component:Login
+      path:'/loginconsole',
+      name:'Loginconsole',
+      component:Loginconsole
     }
   ]
 
@@ -93,7 +93,7 @@ router.beforeEach((to,from,next)=>{
       next();
     }else{
       next({
-        path:'/login'
+        path:'/loginconsole'
       });
     }
   }else{

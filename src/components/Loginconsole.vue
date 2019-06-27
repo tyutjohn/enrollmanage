@@ -29,6 +29,7 @@
 </style>
 <script>
   import Cookies from 'js-cookie';
+  import { Loading } from 'element-ui';
 
   export default {
     data() {
@@ -62,8 +63,16 @@
                 window.localStorage.setItem('token',res.data.result.token);
                 window.localStorage.setItem('username',username);
                 this.$store.dispatch('SaveLoginIfno',username);
-                Cookies.set('username',username,{expires:1});//设置接口有效期
-                this.$router.replace('/');
+                if(res.data.status=='0'){
+                  Loading.service({ fullscreen: true,text:'登陆成功，正在跳转' });
+                  setTimeout(() => {
+                    Cookies.set('username',username,{expires:this._expires * (3*60 * 60 * 1000)});//设置接口有效期为1天
+                    this.$router.replace('/');
+                    Loading.service().close();
+                  }, 1000);
+                }else{
+                  this.$message(res.data.msg);
+                }
             }).catch((result)=>{
                 console.log(result);
             })

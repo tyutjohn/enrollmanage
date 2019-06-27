@@ -6,7 +6,8 @@ var adminSchema=new mongoose.Schema({
     'phone':Number,
     'pwd':String,
     'department':String,
-    'accesstoken':String
+    'accesstoken':String,
+    'rank':String
 });
 
 module.exports=mongoose.model('Admin',adminSchema,'admins');

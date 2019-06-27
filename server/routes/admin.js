@@ -36,6 +36,27 @@ router.get('/', (req, res, next) => {
   })
 })
 
+//管理员登陆后个人信息
+router.post('/adminone',(req,res,next)=>{
+  let admin=req.body.username;
+  Admin.findOne({'name':admin},(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      res.json({
+        status:'0',
+        msg:'',
+        result:{
+          list:doc
+        }
+      })
+    }
+  })
+})
+
 //管理员登陆
 router.post('/login', (req, res, next) => {
   let accesstoken=token.createToken(req.body.name,req.body.pwd,'1','hour');
