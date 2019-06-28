@@ -19,7 +19,7 @@
                     <span>面试管理控制台</span>
                     </template>
                     <el-menu-item-group>
-                    <el-menu-item index="1-1">通知面试</el-menu-item>
+                    <el-menu-item index="1-1" v-if="normalconsole">通知面试</el-menu-item>
                     <el-menu-item index="1-2">面试打分</el-menu-item>
                     </el-menu-item-group>     
                 </el-submenu>
@@ -29,7 +29,7 @@
                     <span>录取管理控制台</span>
                     </template>
                     <el-menu-item-group>
-                    <el-menu-item index="2-1">已面试</el-menu-item>
+                    <el-menu-item index="2-1" v-if="normalconsole">已面试</el-menu-item>
                     <el-menu-item index="2-2">已录取</el-menu-item>
                     <el-menu-item index="2-3">未录取</el-menu-item>
                     </el-menu-item-group>     
@@ -106,7 +106,8 @@
   export default {
     data () {
       return {
-        adminconsole:false
+        adminconsole:false,//超级管理员
+        normalconsole:false//普通管理员
       };
     },
 
@@ -164,15 +165,14 @@
           username:username
         }).then((res)=>{
           if(res.data.result.list.rank=='0'){
-            this.show();
+             this.adminconsole=true;//超级管理员
+             this.normalconsole=true;
+          }else if(res.data.result.list.rank=='1'){
+            this.normalconsole=true;//普通管理员
           }
         }).catch((response)=>{
           console.log(response);
         })
-      },
-      //判断管理员模式
-      show(){
-        this.adminconsole=true;
       },
       test(){
         

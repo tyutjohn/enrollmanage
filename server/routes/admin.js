@@ -9,8 +9,6 @@ const Config=require('./../models/config');
 const token=require('../util/token');
 const jwt=require('jsonwebtoken')
 
-//console.log(token.createToken('john','admin','7','days'));
-
 //管理员个人信息
 router.get('/', (req, res, next) => {
   Admin.find({}, (err, doc) => {
@@ -24,12 +22,8 @@ router.get('/', (req, res, next) => {
         status: '0',
         msg: '',
         result: {
-          status: '0',
-          msg: '',
-          result: {
-            count: doc.length,
-            list: doc
-          }
+          count: doc.length,
+          list: doc
         }
       })
     }
@@ -159,6 +153,43 @@ router.post('/logout', (req, res, next) => {
     }
   })
 });
+
+//添加管理员
+router.post('/addadmin',(req,res,next)=>{
+  const param=new Admin({
+    name:req.body.name,
+    phone:req.body.phone,
+    pwd:req.body.pwd,
+    department:req.body.department,
+    rank:req.body.rank,
+    state:'0'
+  });
+
+  Admin.find({
+    phone:req.body.phone
+  },(err,doc)=>{
+    if(doc.length>0){
+      res.json({
+        status:'1001',
+        msg:'该用户已经注册'
+      })
+    }else{
+      param.save((err,docs)=>{
+        if(err){
+          res.json({
+            status:'1',
+            msg:err.message
+          })
+        }else{
+          res.json({
+            status:'0',
+            msg:'注册成功'
+          })
+        }
+      })
+    }
+  })
+})
 
 //获取短信模板
 router.get('/SmsConfig', (req, res, next) => {
@@ -291,4 +322,8 @@ router.post('/updatealiunAk',(req,res,next)=>{
   // Config.update(param,)
 })
 
+//测试接口
+router.post('/test',(req,res,next)=>{
+  
+})
 module.exports = router;
