@@ -56,7 +56,40 @@
         </el-table-column>
       </el-table>
     </el-tab-pane>
-    <el-tab-pane label="用户添加" name="second">用户添加</el-tab-pane>
+    <el-tab-pane label="用户添加" name="second">
+      <el-form :label-position="labelPosition" label-width="100px" :model="formLabelAlign" :inline="true" size="small">
+        <el-form-item label="注册用户名">
+          <el-input v-model="formLabelAlign.name"></el-input>
+        </el-form-item>
+        <el-form-item label="联系电话">
+          <el-input v-model="formLabelAlign.phone"></el-input>
+        </el-form-item>
+        <el-form-item label="权限">
+          <el-select v-model="formLabelAlign.rank" placeholder="设置用户权限">
+            <el-option label="超级管理员" value="0"></el-option>
+            <el-option label="普通管理员" value="1"></el-option>
+            <el-option label="普通用户" value="2"></el-option>
+          </el-select>
+        </el-form-item>
+        <el-form-item label="部门">
+          <el-select v-model="formLabelAlign.department_id" placeholder="所在部门">
+            <el-option :label="departdatas.department_name" :value="departdatas.department_id" v-for='(departdatas,index) in departdata' :key='index'></el-option>
+          </el-select>
+        </el-form-item>
+      </el-form>
+      <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" :inline="true">
+        <el-form-item label="密码" prop="pass">
+          <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item label="确认密码" prop="checkPass">
+          <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" @click="submitForm()">提交</el-button>
+          <el-button @click="resetForm('ruleForm')">重置</el-button>
+        </el-form-item>
+      </el-form>
+    </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -64,20 +97,62 @@
 .header-tabs{
   margin:30px
 }
+
 </style>
 
 <script>
 
   export default {
     data () {
+      //设置密码验证
+      var validatePass = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请输入密码'));
+        } else {
+          if (this.ruleForm.checkPass !== '') {
+            this.$refs.ruleForm.validateField('checkPass');
+          }
+          callback();
+        }
+      };
+      var validatePass2 = (rule, value, callback) => {
+        if (value === '') {
+          callback(new Error('请再次输入密码'));
+        } else if (value !== this.ruleForm.pass) {
+          callback(new Error('两次输入密码不一致!'));
+        } else {
+          callback();
+        }
+      };
       return {
         activeName: 'first',
         admindata:{//用户组信息
           rank:''//权限信息
         },
         departdata:{
-         department_name:'' 
-        }//部门配置
+         department_name:'',
+         department_id:'0'
+        },//部门配置
+        labelPosition: 'right',//用户添加表单对齐
+        formLabelAlign: {
+          name: '',
+          phone: '',
+          rank:'',
+          department_id:''
+        },
+        //验证密码
+        ruleForm: {
+          pass: '',
+          checkPass: '',
+        },
+        rules: {
+          pass: [
+            { validator: validatePass, trigger: 'blur' }
+          ],
+          checkPass: [
+            { validator: validatePass2, trigger: 'blur' }
+          ]
+        }
       };
     },
 
@@ -148,6 +223,29 @@
           console.log(response);
         })
       },
+      //提交表单注册用户
+      submitForm() {
+        this.axios.post('/admin/addadmin',{
+          name:this.formLabelAlign.name,
+          phone:this.formLabelAlign.phone,
+          department:this.formLabelAlign.department_id,
+          rank:this.formLabelAlign.rank,
+          pwd:this.ruleForm.pass
+        }).then((res)=>{
+          if(res.data.status=='0'){
+            this.$message(res.data.msg);
+            this.getadmindata();
+          }else{
+            this.$message('注册失败'+res.data.msg);
+          }
+        }).catch((response)=>{
+          console.log(response);
+        })
+      },
+      //重置表单信息
+      resetForm(formName) {
+        this.$refs[formName].resetFields();
+      }
     },
 
     watch: {}

@@ -166,7 +166,8 @@ router.post('/addadmin',(req,res,next)=>{
   });
 
   Admin.find({
-    phone:req.body.phone
+    phone:req.body.phone,
+    name:req.body.name
   },(err,doc)=>{
     if(doc.length>0){
       res.json({
@@ -184,6 +185,83 @@ router.post('/addadmin',(req,res,next)=>{
           res.json({
             status:'0',
             msg:'注册成功'
+          })
+        }
+      })
+    }
+  })
+})
+
+//修改管理员信息
+router.post('/alteradmin',(req,res,next)=>{
+  let name=req.body.name,
+      phone=req.body.phone,
+      department=req.body.department,
+      rank=req.body.rank
+  Admin.findOne({
+    'phone':phone
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      Admin.update({
+        'phone':phone
+      },{
+        $set:{
+          'name':name,
+          'department':department,
+          'phone':phone,
+          'rank':rank
+        }
+      },(err,docs)=>{
+        if(err){
+          res.json({
+            status:'1',
+            msg:err.message
+          })
+        }else{
+          res.json({
+            status:'0',
+            msg:'修改成功'
+          })
+        }
+      })
+    }
+  })
+})
+
+//修改管理员密码
+router.post('/alteradminpwd',(req,res,next)=>{
+  let pwd=req.body.pwd,
+      phone=req.body.phone
+  Admin.findOne({
+    'phone':phone
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      Admin.update({
+        'phone':phone
+      },{
+        $set:{
+          'phone':phone
+        }
+      },(err,docs)=>{
+        if(err){
+          res.json({
+            status:'1',
+            msg:err.message
+          })
+        }else{
+          res.json({
+            status:'0',
+            msg:'密码修改成功'
           })
         }
       })
