@@ -9,6 +9,7 @@ import Areadyenroll from '@/components/Areadyenroll'
 import Nopass from '@/components/Nopass'
 import Admin from '@/components/Admin'
 import Adminsetting from '@/components/Adminsetting'
+import { verifyToken } from '../../server/util/token';
 
 Vue.use(Router)
 
@@ -90,7 +91,13 @@ router.beforeEach((to,from,next)=>{
   console.log('进入守卫');
   if(to.meta.auth){
     if(!window.localStorage.getItem('token')==''){
-      next();
+      if(verifyToken(window.localStorage.getItem('token')).User==window.localStorage.getItem('username')){
+        next();
+      }else{
+        next({
+          path:'/loginconsole'
+        })
+      }
     }else{
       next({
         path:'/loginconsole'

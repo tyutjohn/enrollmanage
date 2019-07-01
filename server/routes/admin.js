@@ -7,7 +7,8 @@ const Sms = require('../models/Sms');
 const mongoose = require('mongoose');
 const Config=require('./../models/config');
 const token=require('../util/token');
-const jwt=require('jsonwebtoken')
+const jwt=require('jsonwebtoken');
+const Department = require('../models/department');
 
 //管理员个人信息
 router.get('/', (req, res, next) => {
@@ -62,12 +63,6 @@ router.post('/login', (req, res, next) => {
   }
   Admin.findOne(param, (err, doc) => {
     if (doc) {
-      // let cookienum = md5.update(doc.id).digest('hex')
-      // res.cookie("userId", cookienum, {
-      //   path: '/',
-      //   maxAge: 2000 * 60 * 60
-      // });
-      //req.session.user = doc;
       Admin.update({
         'name':req.body.name
       },{
@@ -462,13 +457,162 @@ router.post('/SmsDelModel', (req, res, next) => {
   })
 })
 
+//获取配置表
+router.get('/getconfig',(req,res,next)=>{
+  Config.find({},(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      res.json({
+        status:'0',
+        msg:'suc',
+        result:{
+          list:doc
+        }
+      })
+    }
+  })
+})
+
 //修改阿里云ak
 router.post('/updatealiunAk',(req,res,next)=>{
-  var param={
-    AccessKeyId:req.body.AccessKeyId,
-    AccessKeySecret:req.body.AccessKeySecret
-  };
-  // Config.update(param,)
+  let AccessKeyId=req.body.AccessKeyId,
+      AccessKeySecret=req.body.AccessKeySecret,
+      id=mongoose.Types.ObjectId(req.body.id);
+  Config.find({
+    '_id':id
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      Config.update({
+        '_id':id
+      },{
+        $set:{
+          'AccessKeyId':AccessKeyId,
+          'AccessKeySecret':AccessKeySecret
+        }
+      },(err,docs)=>{
+        if(err){
+          res.json({
+            status:'1',
+            msg:err.message
+          })
+        }else{
+          res.json({
+            status:'0',
+            msg:'阿里云配置修改成功'
+          })
+        }
+      })
+    }
+  })
+})
+
+//增加部门信息
+router.post('/adddepartinfor',(req,res,next)=>{
+  let param=new Department({
+    department_name:req.body.department_name,
+    department_id:req.body.department_id,
+    department_qq:req.body.department_qq
+  });
+
+  Department.find(param,(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      if(doc.length>0){
+        res.json({
+          status:'1001',
+          msg: '已经存在该数据',
+              result: {
+                list: doc
+              }
+        })
+      }else{
+        param.save((err,docs)=>{
+          if(err){
+            res.json({
+              status:'1',
+              msg:err.message
+            })
+          }else{
+            res.json({
+              status:'0',
+              msg:'部门添加成功'
+            })
+          }
+        })
+      }
+    }
+  })
+})
+
+//修改部门信息
+router.post('/infodepartinfor',(req,res,next)=>{
+  let department_name=req.body.department_name,
+      department_qq=req.body.department_qq,
+      id=mongoose.Types.ObjectId(req.body.id);
+  Department.findOne({
+    '_id':id
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      Department.update({
+        '_id':id
+      },{
+        $set:{
+          'department_name':department_name,
+          'department_qq':department_qq
+        }
+      },(err,docs)=>{
+        if(err){
+          res.json({
+            status:'1',
+            msg:err.message
+          })
+        }else{
+          res.json({
+            status:'0',
+            msg:'修改信息成功'
+          })
+        }
+      })
+    }
+  })
+})
+
+//删除部门信息
+router.post('/deletedepartinfor',(req,res,next)=>{
+  let id=mongoose.Types.ObjectId(req.body.id);
+  Department.findOneAndRemove({
+    '_id':id
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      res.json({
+        status:'0',
+        msg:'删除成功'
+      })
+    }
+  })
 })
 
 //测试接口

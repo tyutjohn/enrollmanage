@@ -1,7 +1,6 @@
 const mongoose=require('mongoose');
-const Schema=mongoose.Schema;
 
-var produtSchema=mongoose.Schema({
+var produtSchema=new mongoose.Schema({
     'AccessKeyId':String,
     'AccessKeySecret':String
 });
