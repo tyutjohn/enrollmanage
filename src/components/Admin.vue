@@ -48,10 +48,37 @@
             <el-button
               size="mini"
               @click="handleEdit(scope.$index, scope.row)">编辑</el-button>
+              <!-- <el-button type="text" @click="dialogFormVisible = true">打开嵌套表单的 Dialog</el-button> -->
+              <el-dialog title="用户信息修改" :visible.sync="dialogFormVisible">
+                <el-form :model="form">
+                  <el-form-item label="用户名" :label-width="formLabelWidth">
+                    <el-input v-model="form.name" autocomplete="off"></el-input>
+                  </el-form-item>
+                  <el-form-item label="联系方式" :label-width="formLabelWidth">
+                    <el-input v-model="form.phone" autocomplete="off"></el-input>
+                  </el-form-item>
+                  <el-form-item label="所属部门" :label-width="formLabelWidth">
+                    <el-select v-model="form.department" placeholder="请选择所在部门">
+                      <el-option :label="departdatas.department_name" :value="departdatas.department_id" v-for='(departdatas,index) in departdata' :key='index'></el-option>
+                    </el-select>
+                  </el-form-item>
+                  <el-form-item label="权限" :label-width="formLabelWidth">
+                    <el-select v-model="form.rank" placeholder="请选择权限">
+                      <el-option label="超级管理员" value="0"></el-option>
+                      <el-option label="普通管理员" value="1"></el-option>
+                      <el-option label="普通用户" value="2"></el-option>
+                    </el-select>
+                  </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                  <el-button @click="dialogFormVisible = false">取 消</el-button>
+                  <el-button type="primary" @click="infouserinfor()">确 定</el-button>
+                </div>
+              </el-dialog>
             <el-button
               size="mini"
               type="danger"
-              @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+              @click="handleDelete(scope.$index, scope.row)">禁用</el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -152,7 +179,16 @@
           checkPass: [
             { validator: validatePass2, trigger: 'blur' }
           ]
-        }
+        },
+        //内嵌表单
+        dialogFormVisible: false,
+        form: {
+          name: '',
+          department: '',
+          rank:'',
+          phone:''
+        },
+        formLabelWidth: '120px'
       };
     },
 
@@ -198,11 +234,40 @@
       },
       //编辑用户信息
        handleEdit(index, row) {
-        console.log(index, row);
+        this.dialogFormVisible=true;
+        this.form.name=row.name;
+        this.form.rank=row.rank;
+        this.form.department=row.department;
+        this.form.phone=row.phone;
       },
       //删除用户
       handleDelete(index, row) {
-        console.log(index, row);
+        this.$confirm('此操作将永久禁用该用户, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.axios.post('/admin/deleteadmin',{
+            'name':row.name
+          }).then((res)=>{
+            if(res.data.status=='0'){
+              this.$message({
+              type: 'success',
+              message: '删除成功!'
+              });
+              this.getadmindata();
+            }else{
+              this.$message('删除失败'+res.data.msg)
+            }
+          }).catch((response)=>{
+            console.log(response);
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
       },
       //获取用户组信息
       getadmindata(){
@@ -245,6 +310,25 @@
       //重置表单信息
       resetForm(formName) {
         this.$refs[formName].resetFields();
+      },
+      //修改用户个人信息
+      infouserinfor(){
+        this.axios.post('/admin/alteradmin',{
+          name:this.form.name,
+          phone:this.form.phone,
+          rank:this.form.rank,
+          department:this.form.department
+        }).then((res)=>{
+          if(res.data.status=='0'){
+            this.$message('修改成功');
+            this.dialogFormVisible = false
+            this.getadmindata();
+          }else{
+            this.$message('修改失败'+res.data.msg)
+          }
+        }).catch((response)=>{
+          console.log(response);
+        })
       }
     },
 

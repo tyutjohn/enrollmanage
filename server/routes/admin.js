@@ -11,7 +11,9 @@ const jwt=require('jsonwebtoken')
 
 //管理员个人信息
 router.get('/', (req, res, next) => {
-  Admin.find({}, (err, doc) => {
+  Admin.find({
+    'state':'0'
+  }, (err, doc) => {
     if (err) {
       res.json({
         ststus: '1',
@@ -262,6 +264,75 @@ router.post('/alteradminpwd',(req,res,next)=>{
           res.json({
             status:'0',
             msg:'密码修改成功'
+          })
+        }
+      })
+    }
+  })
+})
+
+//禁用管理员
+router.post('/deleteadmin',(req,res,next)=>{
+  Admin.findOne({
+    'name':req.body.name
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      Admin.update({
+        'name':req.body.name
+      },{
+        $set:{
+          'state':'1',
+          'delete_time':Date.now()
+        }
+      },(err,docs)=>{
+        if(err){
+          res.json({
+            status:'1',
+            msg:err.message
+          })
+        }else{
+          res.json({
+            status:'0',
+            msg:'管理员已经禁用'
+          })
+        }
+      })
+    }
+  })
+})
+
+//解禁管理员
+router.post('/undeleteadmin',(req,res,next)=>{
+  Admin.findOne({
+    'name':req.body.name
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      Admin.update({
+        'name':req.body.name
+      },{
+        $set:{
+          'state':'0',
+        }
+      },(err,docs)=>{
+        if(err){
+          res.json({
+            status:'1',
+            msg:err.message
+          })
+        }else{
+          res.json({
+            status:'0',
+            msg:'管理员已经解禁'
           })
         }
       })
