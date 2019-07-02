@@ -538,7 +538,7 @@ router.get('/getconfig',(req,res,next)=>{
 })
 
 //修改阿里云ak
-router.post('/updatealiunAk',(req,res,next)=>{
+router.post('/UpdataAliunAk',(req,res,next)=>{
   let AccessKeyId=req.body.AccessKeyId,
       AccessKeySecret=req.body.AccessKeySecret,
       id=mongoose.Types.ObjectId(req.body.id);
@@ -576,7 +576,7 @@ router.post('/updatealiunAk',(req,res,next)=>{
 })
 
 //增加部门信息
-router.post('/adddepartinfor',(req,res,next)=>{
+router.post('/AddDepartinfor',(req,res,next)=>{
   let param=new Department({
     department_name:req.body.department_name,
     department_id:req.body.department_id,
@@ -618,9 +618,10 @@ router.post('/adddepartinfor',(req,res,next)=>{
 })
 
 //修改部门信息
-router.post('/infodepartinfor',(req,res,next)=>{
+router.post('/infoDepartmation',(req,res,next)=>{
   let department_name=req.body.department_name,
       department_qq=req.body.department_qq,
+      department_id=req.body.department_id,
       id=mongoose.Types.ObjectId(req.body.id);
   Department.findOne({
     '_id':id
@@ -636,7 +637,8 @@ router.post('/infodepartinfor',(req,res,next)=>{
       },{
         $set:{
           'department_name':department_name,
-          'department_qq':department_qq
+          'department_qq':department_qq,
+          'department_id':department_id
         }
       },(err,docs)=>{
         if(err){
@@ -656,7 +658,7 @@ router.post('/infodepartinfor',(req,res,next)=>{
 })
 
 //删除部门信息
-router.post('/deletedepartinfor',(req,res,next)=>{
+router.post('/DeleteDepart',(req,res,next)=>{
   let id=mongoose.Types.ObjectId(req.body.id);
   Department.findOneAndRemove({
     '_id':id
@@ -677,61 +679,21 @@ router.post('/deletedepartinfor',(req,res,next)=>{
 
 //测试接口
 router.post('/test',(req,res,next)=>{
-  var param = new Sms({
-    SignName: req.body.SignName,
-    TemplateCode: req.body.TemplateCode,
-    describe:req.body.describe,
-    state: '0'
-  });
-
-  var SignName = req.body.SignName;
-  var TemplateCode = req.body.TemplateCode;
-  if (!SignName == '') {
-    if (!TemplateCode == '') {
-      Sms.find(param, (err, doc) => {
-        if (err) {
-          res.json({
-            status: '1',
-            msg: err.message
-          })
-        } else {
-          if (doc.length > 0) {
-            res.json({
-              status: '1001',
-              msg: '已经存在该数据',
-              result: {
-                list: doc
-              }
-            })
-          } else {
-            param.save((err, docs) => {
-              if (err) {
-                res.json({
-                  status: '1',
-                  msg: err.message
-                })
-              } else {
-                res.json({
-                  status: '0',
-                  msg: '模板添加成功',
-                  result: ''
-                })
-              }
-            })
-          }
+  Config.find({},(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      res.json({
+        status:'0',
+        msg:'suc',
+        result:{
+          list:doc
         }
       })
-    } else {
-      res.json({
-        status: '1001',
-        msg: '未填写模块Code'
-      })
     }
-  } else {
-    res.json({
-      status: '1001',
-      msg: '未填写短信签名名称'
-    })
-  }
+  })
 })
 module.exports = router;
