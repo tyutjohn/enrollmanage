@@ -359,10 +359,11 @@ router.get('/SmsConfig', (req, res, next) => {
 })
 
 //添加短信模板
-router.post('/SmsPushModel', (req, res, next) => {
+router.post('/SmsPushModel',(req,res,next)=>{
   var param = new Sms({
     SignName: req.body.SignName,
     TemplateCode: req.body.TemplateCode,
+    describe:req.body.describe,
     state: '0'
   });
 
@@ -415,11 +416,50 @@ router.post('/SmsPushModel', (req, res, next) => {
       msg: '未填写短信签名名称'
     })
   }
-
 })
 
-//删除短信模板
-router.post('/SmsDelModel', (req, res, next) => {
+//修改短信模块
+router.post('/SmsInfoModel',(req,res,next)=>{
+  let id=mongoose.Types.ObjectId(req.body.id),
+      SignName=req.body.SignName,
+      TemplateCode=req.body.TemplateCode,
+      describe=req.body.describe;
+  Sms.find({
+    '_id':id
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      Sms.update({
+        '_id':id
+      },{
+        $set:{
+          'SignName':SignName,
+          'TemplateCode':TemplateCode,
+          'describe':describe
+        }
+      },(err,docs)=>{
+        if(err){
+          res.json({
+            status:'1',
+            msg:err.message
+          })
+        }else{
+          res.json({
+            status:'0',
+            msg:'短信模块修改成功'
+          })
+        }
+      })
+    }
+  })
+})
+
+//禁用短信模板
+router.post('/SmsDisModel', (req, res, next) => {
   var SmsId = req.body.id;
   var id = mongoose.Types.ObjectId(SmsId);
   Sms.findOne({
@@ -441,7 +481,7 @@ router.post('/SmsDelModel', (req, res, next) => {
             }else{
                 res.json({
                     status:'0',
-                    msg:'模块删除成功',
+                    msg:'模块禁用成功',
                     result:''
                 })
             }
@@ -453,6 +493,26 @@ router.post('/SmsDelModel', (req, res, next) => {
             result: docs
           })
       }
+    }
+  })
+})
+
+//删除短信模板
+router.post('/SmsDelModel',(req,res,next)=>{
+  let id=mongoose.Types.ObjectId(req.body.id);
+  Sms.findOneAndRemove({
+    '_id':id
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      res.json({
+        status:'0',
+        msg:'删除成功'
+      })
     }
   })
 })
@@ -617,6 +677,61 @@ router.post('/deletedepartinfor',(req,res,next)=>{
 
 //测试接口
 router.post('/test',(req,res,next)=>{
-  
+  var param = new Sms({
+    SignName: req.body.SignName,
+    TemplateCode: req.body.TemplateCode,
+    describe:req.body.describe,
+    state: '0'
+  });
+
+  var SignName = req.body.SignName;
+  var TemplateCode = req.body.TemplateCode;
+  if (!SignName == '') {
+    if (!TemplateCode == '') {
+      Sms.find(param, (err, doc) => {
+        if (err) {
+          res.json({
+            status: '1',
+            msg: err.message
+          })
+        } else {
+          if (doc.length > 0) {
+            res.json({
+              status: '1001',
+              msg: '已经存在该数据',
+              result: {
+                list: doc
+              }
+            })
+          } else {
+            param.save((err, docs) => {
+              if (err) {
+                res.json({
+                  status: '1',
+                  msg: err.message
+                })
+              } else {
+                res.json({
+                  status: '0',
+                  msg: '模板添加成功',
+                  result: ''
+                })
+              }
+            })
+          }
+        }
+      })
+    } else {
+      res.json({
+        status: '1001',
+        msg: '未填写模块Code'
+      })
+    }
+  } else {
+    res.json({
+      status: '1001',
+      msg: '未填写短信签名名称'
+    })
+  }
 })
 module.exports = router;
