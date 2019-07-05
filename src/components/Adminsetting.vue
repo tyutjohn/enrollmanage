@@ -165,7 +165,38 @@
           <el-button type="warning" round @click="updateinfo=false">点击修改</el-button>
           <el-button type="danger" round @click='SaveAk()'>保存</el-button>
       </el-tab-pane>
-      <el-tab-pane label="开放时间管理">系统开放时间</el-tab-pane>
+      <el-tab-pane label="开放时间管理">
+          <el-date-picker
+            v-model="signuptime"  
+            placeholder="选择日期时间"
+            type="datetime"
+            format="yyyy 年 MM 月 dd 日 HH 小时 mm 分"
+            value-format="yyyyMMddHHmm"
+            disabled>
+          </el-date-picker>
+          <el-date-picker
+            v-model="signdowntime"  
+            placeholder="选择日期时间"
+            type="datetime"
+            format="yyyy 年 MM 月 dd 日 HH 小时 mm 分"
+            value-format="yyyyMMddHHmm">
+          </el-date-picker>
+          <el-date-picker
+            v-model="queryuptime"  
+            placeholder="选择日期时间"
+            type="datetime"
+            format="yyyy 年 MM 月 dd 日 HH 小时 mm 分"
+            value-format="yyyyMMddHHmm">
+          </el-date-picker>
+          <el-date-picker
+            v-model="querydowntime"  
+            placeholder="选择日期时间"
+            type="datetime"
+            format="yyyy 年 MM 月 dd 日 HH 小时 mm 分"
+            value-format="yyyyMMddHHmm">
+          </el-date-picker>
+          <el-button type="danger" round @click='test()'>test</el-button>
+      </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -218,6 +249,10 @@
           id:''
         },
         updateinfo:true,//禁用配置
+        signuptime:'',//报名时间开始
+        signdowntime:'',//报名时间结束
+        queryuptime:'',//查询录取开始时间
+        querydowntime:'',//查询录取结束时间
       };
     },
 
@@ -419,6 +454,10 @@
         }).catch((response)=>{
           console.log(response);
         })
+      },
+      //test
+      test(){
+        console.log(this.timedate);
       }
     },
 

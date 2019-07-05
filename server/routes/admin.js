@@ -301,6 +301,26 @@ router.post('/deleteadmin',(req,res,next)=>{
   })
 })
 
+//删除管理员
+router.post('/AdminDelete',(req,res,next)=>{
+  let id=mongoose.Types.ObjectId(req.body.id);
+  Admin.findOneAndRemove({
+    '_id':id
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      res.json({
+        status:'0',
+        msg:'删除成功'
+      })
+    }
+  })
+})
+
 //解禁管理员
 router.post('/undeleteadmin',(req,res,next)=>{
   Admin.findOne({
@@ -672,6 +692,49 @@ router.post('/DeleteDepart',(req,res,next)=>{
       res.json({
         status:'0',
         msg:'删除成功'
+      })
+    }
+  })
+})
+
+//修改系统报名时间
+router.post('/UpdateEnrollTime',(req,res,next)=>{
+  let id=mongoose.Types.ObjectId(req.body.id),
+      signuptime=req.body.signuptime,
+      signdowntime=req.body.signdowntime,
+      queryuptime=req.body.queryuptime,
+      querydowntime=req.body.querydowntime;
+  Config.find({
+    '_id':id
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      Config.update({
+        '_id':id
+      },{
+        $set:{
+          'signuptime':signuptime,
+          'signdowntime':signdowntime,
+          'queryuptime':queryuptime,
+          'querydowntime':querydowntime
+        }
+      },(err,docs)=>{
+        if(err){
+          res.json({
+            status:'1',
+            msg:err.message
+          })
+        }else{
+          res.json({
+            status:'0',
+            msg:'修改成功',
+            result:docs
+          })
+        }
       })
     }
   })

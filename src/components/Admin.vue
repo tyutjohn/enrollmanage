@@ -77,8 +77,9 @@
               </el-dialog>
             <el-button
               size="mini"
-              type="danger"
+              type="warning"
               @click="handleDelete(scope.$index, scope.row)">禁用</el-button>
+              <el-button type="danger" icon="el-icon-delete" circle @click="AdminDelete(scope.row)"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -186,7 +187,8 @@
           name: '',
           department: '',
           rank:'',
-          phone:''
+          phone:'',
+          id:''
         },
         formLabelWidth: '120px'
       };
@@ -253,11 +255,11 @@
             if(res.data.status=='0'){
               this.$message({
               type: 'success',
-              message: '删除成功!'
+              message: '禁用成功!'
               });
               this.getadmindata();
             }else{
-              this.$message('删除失败'+res.data.msg)
+              this.$message('禁用失败'+res.data.msg)
             }
           }).catch((response)=>{
             console.log(response);
@@ -265,7 +267,7 @@
         }).catch(() => {
           this.$message({
             type: 'info',
-            message: '已取消删除'
+            message: '已取消禁用'
           });          
         });
       },
@@ -329,7 +331,37 @@
         }).catch((response)=>{
           console.log(response);
         })
-      }
+      },
+      //删除管理员
+      AdminDelete(row){
+        this.form.id=row._id;
+        this.$confirm('此操作将永久删除该用户, 是否继续?', '提示', {
+          confirmButtonText: '确定',
+          cancelButtonText: '取消',
+          type: 'warning'
+        }).then(() => {
+          this.axios.post('/admin/AdminDelete',{
+            id:this.form.id
+          }).then((res)=>{
+            if(res.data.status=='0'){
+              this.$message({
+              type: 'success',
+              message: '删除成功!'
+              });
+              this.getadmindata();
+            }else{
+              this.$message('删除失败'+res.data.msg)
+            }
+          }).catch((response)=>{
+            console.log(response);
+          })
+        }).catch(() => {
+          this.$message({
+            type: 'info',
+            message: '已取消删除'
+          });          
+        });
+      },
     },
 
     watch: {}
