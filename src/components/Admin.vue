@@ -79,7 +79,26 @@
               size="mini"
               type="warning"
               @click="handleDelete(scope.$index, scope.row)">禁用</el-button>
-              <el-button type="danger" icon="el-icon-delete" circle @click="AdminDelete(scope.row)"></el-button>
+            <el-button
+              size="mini"
+              type="danger"
+              @click="AdminPwdDig(scope.row)"            
+            >修改密码</el-button>
+            <el-dialog title="用户密码修改" :visible.sync="dialogPwdVisible">
+                <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" :inline="true">
+                  <el-form-item label="密码" prop="pass">
+                    <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
+                  </el-form-item>
+                  <el-form-item label="确认密码" prop="checkPass">
+                    <el-input type="password" v-model="ruleForm.checkPass" autocomplete="off"></el-input>
+                  </el-form-item>
+                </el-form>
+                <div slot="footer" class="dialog-footer">
+                  <el-button @click="dialogPwdVisible = false">取 消</el-button>
+                  <el-button type="primary" @click="AdminPwdUpdate()">确 定</el-button>
+                </div>
+              </el-dialog>
+            <el-button type="danger" icon="el-icon-delete" circle @click="AdminDelete(scope.row)"></el-button>
           </template>
         </el-table-column>
       </el-table>
@@ -188,9 +207,12 @@
           department: '',
           rank:'',
           phone:'',
-          id:''
+          id:'',
+          pwd:''
         },
-        formLabelWidth: '120px'
+        formLabelWidth: '120px',
+        //修改密码
+        dialogPwdVisible:false,
       };
     },
 
@@ -361,6 +383,28 @@
             message: '已取消删除'
           });          
         });
+      },
+      //修改密码对话框
+      AdminPwdDig(row){
+        this.form.phone=row.phone;
+        this.dialogPwdVisible=true;
+      },
+      //修改密码
+      AdminPwdUpdate(){
+        this.axios.post('/admin/alteradminpwd',{
+          pwd:this.ruleForm.pass,
+          phone:this.form.phone
+        }).then((res)=>{
+          if(res.data.status=='0'){
+            this.$message(res.data.msg);
+            this.dialogPwdVisible=false;
+            this.getadmindata();
+          }else{
+            this.$message(res.data.msg);
+          }
+        }).catch((response)=>{
+          console.log(response);
+        })
       },
     },
 

@@ -247,7 +247,7 @@ router.post('/alteradminpwd',(req,res,next)=>{
         'phone':phone
       },{
         $set:{
-          'phone':phone
+          'pwd':pwd
         }
       },(err,docs)=>{
         if(err){
