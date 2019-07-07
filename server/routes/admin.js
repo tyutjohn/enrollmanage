@@ -742,21 +742,6 @@ router.post('/UpdateEnrollTime',(req,res,next)=>{
 
 //测试接口
 router.post('/test',(req,res,next)=>{
-  Config.find({},(err,doc)=>{
-    if(err){
-      res.json({
-        status:'1',
-        msg:err.message
-      })
-    }else{
-      res.json({
-        status:'0',
-        msg:'suc',
-        result:{
-          list:doc
-        }
-      })
-    }
-  })
+  
 })
 module.exports = router;

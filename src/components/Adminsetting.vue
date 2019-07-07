@@ -166,36 +166,52 @@
           <el-button type="danger" round @click='SaveAk()'>保存</el-button>
       </el-tab-pane>
       <el-tab-pane label="开放时间管理">
+        <el-row class="row-bg">
+          <label><p class="time-font">报名系统开放时间:</p>{{AliyunConfig.signuptime}}</label>
           <el-date-picker
             v-model="signuptime"  
-            placeholder="选择日期时间"
+            placeholder="选择报名开始时间"
             type="datetime"
             format="yyyy 年 MM 月 dd 日 HH 小时 mm 分"
-            value-format="yyyyMMddHHmm"
-            disabled>
+            value-format="yyyy年MM月dd日HH时mm分"
+            :disabled="timeconsole">
           </el-date-picker>
+          <label><p class="time-font">报名系统结束时间:</p>{{AliyunConfig.signdowntime}}</label>
           <el-date-picker
             v-model="signdowntime"  
-            placeholder="选择日期时间"
+            placeholder="选择报名结束时间"
             type="datetime"
             format="yyyy 年 MM 月 dd 日 HH 小时 mm 分"
-            value-format="yyyyMMddHHmm">
+            value-format="yyyy年MM月dd日HH时mm分"
+            :disabled="timeconsole">
           </el-date-picker>
+        </el-row>
+        <el-row class="row-bg">
+          <label><p class="time-font">面试查询开放时间:</p>{{AliyunConfig.queryuptime}}</label>
           <el-date-picker
             v-model="queryuptime"  
-            placeholder="选择日期时间"
+            placeholder="选择结果查询开始时间"
             type="datetime"
             format="yyyy 年 MM 月 dd 日 HH 小时 mm 分"
-            value-format="yyyyMMddHHmm">
+            value-format="yyyy年MM月dd日HH时mm分"
+            :disabled="timeconsole">
           </el-date-picker>
+          <label><p class="time-font">面试查询结束时间:</p>{{AliyunConfig.querydowntime}}</label>
           <el-date-picker
             v-model="querydowntime"  
-            placeholder="选择日期时间"
+            placeholder="选择结果查询结束时间"
             type="datetime"
             format="yyyy 年 MM 月 dd 日 HH 小时 mm 分"
-            value-format="yyyyMMddHHmm">
+            value-format="yyyy年MM月dd日HH时mm分"
+            :disabled="timeconsole">
           </el-date-picker>
-          <el-button type="danger" round @click='test()'>test</el-button>
+        </el-row>
+        <el-row class="row-bg" justify="end" type="flex">
+          <el-col :span="6">
+            <el-button type="success" @click="Copytime()">开始修改</el-button>
+            <el-button type="primary" @click="Savetime()">保存</el-button>
+          </el-col>
+        </el-row>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -205,6 +221,16 @@
   float:right;
   margin-right: 30px;
   margin-bottom: 10px;
+}
+
+.row-bg{
+  margin:10px;
+}
+
+.time-font{
+  margin:10px;
+  color:rgba(22, 21, 21, 0.5);
+  display:inline-block;
 }
 </style>
 
@@ -246,13 +272,18 @@
         AliyunConfig:{//配置表
           AccessKeyId:'',
           AccessKeySecret:'',
-          id:''
+          id:'',
+          signuptime:'',
+          signdowntime:'',
+          queryuptime:'',
+          querydowntime:''
         },
         updateinfo:true,//禁用配置
         signuptime:'',//报名时间开始
         signdowntime:'',//报名时间结束
         queryuptime:'',//查询录取开始时间
         querydowntime:'',//查询录取结束时间
+        timeconsole:true,//时间设置
       };
     },
 
@@ -433,6 +464,10 @@
           this.AliyunConfig.AccessKeyId=res.data.result.list[0].AccessKeyId;
           this.AliyunConfig.AccessKeySecret=res.data.result.list[0].AccessKeySecret;
           this.AliyunConfig.id=res.data.result.list[0]._id;
+          this.AliyunConfig.signuptime=res.data.result.list[0].signuptime;
+          this.AliyunConfig.signdowntime=res.data.result.list[0].signdowntime;
+          this.AliyunConfig.queryuptime=res.data.result.list[0].queryuptime;
+          this.AliyunConfig.querydowntime=res.data.result.list[0].querydowntime;
         }).catch((response)=>{
           console.log(response);
         })
@@ -453,6 +488,34 @@
           }
         }).catch((response)=>{
           console.log(response);
+        })
+      },
+      //系统时间传值
+      Copytime(){
+        this.timeconsole=false;
+        this.signuptime=this.AliyunConfig.signuptime;
+        this.signdowntime=this.AliyunConfig.signdowntime;
+        this.queryuptime=this.AliyunConfig.queryuptime;
+        this.querydowntime=this.AliyunConfig.querydowntime;
+      },
+      //修改系统报名时间
+      Savetime(){
+        this.axios.post('/admin/UpdateEnrollTime',{
+          id:this.AliyunConfig.id,
+          signuptime:this.signuptime,
+          signdowntime:this.signdowntime,
+          queryuptime:this.queryuptime,
+          querydowntime:this.querydowntime
+        }).then((res)=>{
+          if(res.data.status=='0'){
+            this.$message(res.data.msg);
+            this.timeconsole=true;
+            this.getAliyunConfig();
+          }else{
+            this.$message(res.data.msg);
+          }
+        }).catch((response)=>{
+          console.log(response)
         })
       },
       //test
