@@ -355,6 +355,29 @@ router.post('/undeleteadmin',(req,res,next)=>{
   })
 })
 
+//获取禁用管理员列表
+router.get('/GetUnadmin',(req,res,next)=>{
+  Admin.find({
+    state:'1'
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      res.json({
+        status:'0',
+        msg:'suc',
+        result:{
+          count:doc.length,
+          list:doc
+        }
+      })
+    }
+  })
+})
+
 //获取短信模板
 router.get('/SmsConfig', (req, res, next) => {
   Sms.find({

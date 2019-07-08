@@ -1,7 +1,6 @@
 <template>
   <div>
     <el-tabs v-model="activeName" @tab-click="handleClick" class="header-tabs">
-    <el-tab-pane label="用户组" name="third">用户组</el-tab-pane>
     <el-tab-pane label="用户管理" name="first">
       <el-table
         :data="admindata.list"
@@ -137,6 +136,57 @@
         </el-form-item>
       </el-form>
     </el-tab-pane>
+    <el-tab-pane label="禁用管理" name="third">
+      <el-table
+        :data="unadmindata.list"
+        style="width: 100%">
+        <el-table-column
+          label="姓名"
+          width="120">
+          <template slot-scope="scope">
+            <i class="el-icon-user"></i>
+            <span style="margin-left: 10px">{{ scope.row.name }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="部门"
+          width="180">
+          <template slot-scope="scope">
+            <i class="el-icon-s-home"></i>
+            <span style="margin-left:10px">{{getdepartname(scope.row.department)}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="联系电话"
+          width="180">
+          <template slot-scope="scope">
+            <i class="el-icon-phone-outline"></i>
+            <span style="margin-left:10px">{{scope.row.phone}}</span>
+          </template>
+        </el-table-column>
+        <el-table-column
+            prop="tag"
+            label="权限"
+            width="140"
+            :filters="[{ text: '超级管理员', value: '0' }, { text: '普通管理员', value: '1' },{text:'普通用户',value:'2'}]"
+            :filter-method="filterTag"
+            filter-placement="bottom-end">
+            <template slot-scope="scope">
+              <el-tag
+                :type="scope.row.rank === '0' ? 'danger' : 'success'"
+                disable-transitions>{{rankname(scope.row.rank)}}</el-tag>
+            </template>
+          </el-table-column>
+        <el-table-column label="操作">
+          <template slot-scope="scope">
+            <el-button
+              size="mini"
+              type="warning"
+              @click="removedisable(scope.row)">解除禁用</el-button>
+          </template>
+        </el-table-column>
+      </el-table>
+    </el-tab-pane>
     </el-tabs>
   </div>
 </template>
@@ -213,6 +263,9 @@
         formLabelWidth: '120px',
         //修改密码
         dialogPwdVisible:false,
+        //禁用管理员
+        unadmindata:'',
+        removename:''//解除管理员
       };
     },
 
@@ -249,6 +302,7 @@
 
     mounted() {
       this.getadmindata();
+      this.getunadmin();
     },
 
     methods: {
@@ -264,7 +318,7 @@
         this.form.department=row.department;
         this.form.phone=row.phone;
       },
-      //删除用户
+      //禁用用户
       handleDelete(index, row) {
         this.$confirm('此操作将永久禁用该用户, 是否继续?', '提示', {
           confirmButtonText: '确定',
@@ -280,6 +334,7 @@
               message: '禁用成功!'
               });
               this.getadmindata();
+              this.getunadmin();
             }else{
               this.$message('禁用失败'+res.data.msg)
             }
@@ -398,6 +453,31 @@
           if(res.data.status=='0'){
             this.$message(res.data.msg);
             this.dialogPwdVisible=false;
+            this.getadmindata();
+          }else{
+            this.$message(res.data.msg);
+          }
+        }).catch((response)=>{
+          console.log(response);
+        })
+      },
+      //获取禁用管理员列表
+      getunadmin(){
+        this.axios.get('/admin/GetUnadmin').then((res)=>{
+          this.unadmindata=res.data.result;
+        }).catch((response)=>{
+          console.log(response)
+        })
+      },
+      //解除禁用
+      removedisable(row){
+        this.removename=row.name;
+        this.axios.post('/admin/undeleteadmin',{
+          name:this.removename
+        }).then((res)=>{
+          if(res.data.status=='0'){
+            this.$message(res.data.msg);
+            this.getunadmin();
             this.getadmindata();
           }else{
             this.$message(res.data.msg);
