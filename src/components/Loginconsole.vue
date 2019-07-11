@@ -54,6 +54,7 @@
     ,
 
     methods: {
+      //登陆
         login(){
             this.axios.post('/admin/login',{
                 name:this.formLabelAlign.name,

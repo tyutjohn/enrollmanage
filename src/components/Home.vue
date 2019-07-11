@@ -1,7 +1,33 @@
 <template>
   <div>
     <el-container>
-        <el-header>Header</el-header>
+        <el-header>
+          <div class="container">
+            <el-row type="flex" justify="space-between">
+              <el-col :span="4"></el-col>
+              <el-col :span="4" style="font-size:16px;margin-top:10px">学生信息管理系统</el-col>
+              <el-col :span="2">
+                <el-popover
+                  placement="bottom"
+                  width="100"
+                  trigger="click">
+                  <el-form :label-position="labelPosition" label-width="80px" :model="AdminUserInfor">
+                    <el-form-item label="管理员">
+                      {{AdminUserInfor.name}}
+                    </el-form-item>
+                    <el-form-item label="权限等级">
+                      {{rankname(AdminUserInfor.rank)}}
+                    </el-form-item>
+                    <el-form-item>
+                      <el-button type="text" @click="logout()">退出登陆</el-button>
+                    </el-form-item>
+                  </el-form>
+                  <img :src="circleUrl" width="50px" height="50px" slot="reference">
+                </el-popover>
+              </el-col>
+            </el-row>
+          </div>
+        </el-header>
         <el-container>
             <el-aside width="210px">
                 <el-menu
@@ -48,7 +74,11 @@
               <router-view></router-view>
             </el-main>
         </el-container>
-        <el-footer class="footer">footer</el-footer>
+        <el-footer class="footer">
+          <div class="container">
+            © 2019-2020 Powered By tyutjohn
+          </div>
+        </el-footer>
     </el-container>
   </div>
 </template>
@@ -65,6 +95,11 @@
     background-color: #E9EEF3;
     color: #333;
     text-align: center;
+  }
+
+  .container{
+    width:80%;
+    margin:0 auto;
   }
   
   body > .el-container {
@@ -102,12 +137,19 @@
 
 <script>
   import NavInform from './../components/Inform.vue';
+import { Loading } from 'element-ui';
 
   export default {
     data () {
       return {
         adminconsole:false,//超级管理员
-        normalconsole:false//普通管理员
+        normalconsole:false,//普通管理员
+        circleUrl:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",//管理员默认头像
+        AdminUserInfor:{//管理员登陆信息
+          name:'',
+          rank:''
+        },
+        labelPosition:'right',//表单排序方向
       };
     },
 
@@ -116,14 +158,29 @@
     },
 
     computed: {
-      
+      //动态权限
+      rankname(){
+        return function(res){
+          switch(res){
+            case '0':
+              return '超级管理员'
+              break;
+            case '1':
+              return '普通管理员'
+              break;
+            case '2':
+              return '普通用户'
+              break;
+          }
+        }
+      },
     },
 
     beforeMount() {},
 
     mounted() {
-      this.test();
       this.adminrank();
+      this.adminOne();
     },
 
     methods: {
@@ -174,8 +231,38 @@
           console.log(response);
         })
       },
-      test(){
-        
+      //获取登陆管理员信息
+      adminOne(){
+        let username=window.localStorage.getItem('username');
+        this.axios.post('/admin/adminone',{
+          username:username
+        }).then((res)=>{
+          if(res.data.status=='0'){
+            this.AdminUserInfor.name=res.data.result.list.name;
+            this.AdminUserInfor.rank=res.data.result.list.rank;
+          }else{
+            this.$message('登陆信息已过期');
+          }
+        }).catch((response)=>{
+          console.log(response);
+        })
+      },
+      //退出管理员登陆
+      logout(){
+        localStorage.clear();
+        this.axios.post('/admin/logout').then((res)=>{
+          if(res.data.status=='0'){
+            Loading.service({fullscreen:true,text:'退出成功,正在跳转'});
+            setTimeout(()=>{
+              this.$router.replace('/Loginconsole');
+              Loading.service().close();
+            },1000);
+          }else{
+            this.$message('退出失败');
+          }
+        }).catch((response)=>{
+          console.log(response);
+        })
       }
     },
 

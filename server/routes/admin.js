@@ -138,7 +138,7 @@ router.post('/checktoken',(req,res,next)=>{
 
 //管理员退出
 router.post('/logout', (req, res, next) => {
-  res.cookie('userId', '', {
+  res.cookie('username', '', {
     path: '/',
     maxAge: -1
   });
