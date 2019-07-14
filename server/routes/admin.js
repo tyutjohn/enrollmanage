@@ -56,10 +56,10 @@ router.post('/adminone',(req,res,next)=>{
 
 //管理员登陆
 router.post('/login', (req, res, next) => {
-  let accesstoken=token.createToken(req.body.name,req.body.pwd,'1','hour');
+  let accesstoken=token.createToken(req.body.name,req.body.pwd,'3','hour');//设置token有效期3小时
   let param = {
     name: req.body.name,
-    pwd: req.body.pwd
+    pwd: md5.update(req.body.pwd).digest('hex')
   }
   Admin.findOne(param, (err, doc) => {
     if (doc) {
@@ -156,7 +156,7 @@ router.post('/addadmin',(req,res,next)=>{
   const param=new Admin({
     name:req.body.name,
     phone:req.body.phone,
-    pwd:req.body.pwd,
+    pwd:md5.update(req.body.pwd).digest('hex'),
     department:req.body.department,
     rank:req.body.rank,
     state:'0'
@@ -232,7 +232,7 @@ router.post('/alteradmin',(req,res,next)=>{
 
 //修改管理员密码
 router.post('/alteradminpwd',(req,res,next)=>{
-  let pwd=req.body.pwd,
+  let pwd=md5.update(req.body.pwd).digest('hex'),
       phone=req.body.phone
   Admin.findOne({
     'phone':phone
