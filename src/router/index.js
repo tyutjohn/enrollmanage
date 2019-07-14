@@ -9,7 +9,6 @@ import Areadyenroll from '@/components/Areadyenroll'
 import Nopass from '@/components/Nopass'
 import Admin from '@/components/Admin'
 import Adminsetting from '@/components/Adminsetting'
-import Datavisual from '@/components/Datavisual'
 import { verifyToken } from '../../server/util/token';
 
 Vue.use(Router)
@@ -72,13 +71,6 @@ const routes=[
           component:Adminsetting,
           meta: {
             auth: true,
-          }
-        },{
-          path:'/datavisual',
-          name:'Datavisual',
-          component:Datavisual,
-          meta:{
-            auth:true,
           }
         }
       ]

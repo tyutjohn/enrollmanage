@@ -242,6 +242,8 @@ import { Loading } from 'element-ui';
             this.AdminUserInfor.rank=res.data.result.list.rank;
           }else{
             this.$message('登陆信息已过期');
+            localStorage.clear();
+            this.$router.replace('/Loginconsole');
           }
         }).catch((response)=>{
           console.log(response);
@@ -249,8 +251,11 @@ import { Loading } from 'element-ui';
       },
       //退出管理员登陆
       logout(){
+        let username=window.localStorage.getItem('username');
         localStorage.clear();
-        this.axios.post('/admin/logout').then((res)=>{
+        this.axios.post('/admin/logout',{
+          username:username
+        }).then((res)=>{
           if(res.data.status=='0'){
             Loading.service({fullscreen:true,text:'退出成功,正在跳转'});
             setTimeout(()=>{

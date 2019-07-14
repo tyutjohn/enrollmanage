@@ -1,14 +1,13 @@
 const express = require('express');
 const router = express.Router();
 const Admin = require('./../models/admin');
-const crypto = require('crypto');
-const md5 = crypto.createHash('md5');
 const Sms = require('../models/Sms');
 const mongoose = require('mongoose');
 const Config=require('./../models/config');
 const token=require('../util/token');
 const jwt=require('jsonwebtoken');
 const Department = require('../models/department');
+var utility=require("utility");
 
 //管理员个人信息
 router.get('/', (req, res, next) => {
@@ -56,10 +55,11 @@ router.post('/adminone',(req,res,next)=>{
 
 //管理员登陆
 router.post('/login', (req, res, next) => {
-  let accesstoken=token.createToken(req.body.name,req.body.pwd,'3','hour');//设置token有效期3小时
+  let accesstoken=token.createToken(req.body.name,req.body.pwd,'3','hour');//
+  var pwd=utility.md5(req.body.pwd);
   let param = {
     name: req.body.name,
-    pwd: md5.update(req.body.pwd).digest('hex')
+    pwd:pwd
   }
   Admin.findOne(param, (err, doc) => {
     if (doc) {
@@ -87,7 +87,7 @@ router.post('/login', (req, res, next) => {
           })
         }
       })
-      console.log(accesstoken);
+      //console.log(accesstoken);
     } else {
       res.json({
         status: '1001',
@@ -138,53 +138,85 @@ router.post('/checktoken',(req,res,next)=>{
 
 //管理员退出
 router.post('/logout', (req, res, next) => {
-  res.cookie('username', '', {
-    path: '/',
-    maxAge: -1
-  });
-  res.json({
-    status: '0',
-    msg: '退出成功',
-    result: {
-      data: '退出成功'
-    }
-  })
-});
-
-//添加管理员
-router.post('/addadmin',(req,res,next)=>{
-  const param=new Admin({
-    name:req.body.name,
-    phone:req.body.phone,
-    pwd:md5.update(req.body.pwd).digest('hex'),
-    department:req.body.department,
-    rank:req.body.rank,
-    state:'0'
-  });
-
-  Admin.find({
-    phone:req.body.phone,
-    name:req.body.name
+  let username=req.body.username;
+  Admin.findOne({
+    'name':username
   },(err,doc)=>{
-    if(doc.length>0){
+    if(err){
       res.json({
-        status:'1001',
-        msg:'该用户已经注册'
+        status:'1',
+        msg:err.message
       })
     }else{
-      param.save((err,docs)=>{
+      Admin.update({
+        'name':username
+      },{
+        $set:{
+          'accesstoken':''
+        }
+      },(err,docs)=>{
         if(err){
           res.json({
             status:'1',
             msg:err.message
           })
         }else{
+          res.cookie('username', '', {
+            path: '/',
+            maxAge: -1
+          });
           res.json({
             status:'0',
-            msg:'注册成功'
+            msg:'退出成功'
           })
         }
       })
+    }
+  })
+});
+
+//添加管理员
+router.post('/Addadmin',(req,res,next)=>{
+  var pwd=utility.md5(req.body.pwd);
+  var param=new Admin({
+    name:req.body.name,
+    phone:req.body.phone,
+    pwd:pwd,
+    department:req.body.department,
+    rank:req.body.rank,
+    state:'0'
+  });
+
+  Admin.find({
+    'name':req.body.name
+  },(err,doc)=>{
+    if(err){ 
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      if(doc.length>0){
+        res.json({
+          status:'1001',
+          msg:'该用户已经注册'
+        })
+      }else{
+        param.save((err,docs)=>{
+          //console.log(docs);
+          if(err){
+            res.json({
+              status:'1',
+              msg:err.message
+            })
+          }else{
+            res.json({
+              status:'0',
+              msg:'注册成功'
+            })
+          }
+        })
+      }
     }
   })
 })
@@ -232,8 +264,8 @@ router.post('/alteradmin',(req,res,next)=>{
 
 //修改管理员密码
 router.post('/alteradminpwd',(req,res,next)=>{
-  let pwd=md5.update(req.body.pwd).digest('hex'),
-      phone=req.body.phone
+  var pwd=utility.md5(req.body.pwd);
+  let phone=req.body.phone
   Admin.findOne({
     'phone':phone
   },(err,doc)=>{
@@ -765,6 +797,46 @@ router.post('/UpdateEnrollTime',(req,res,next)=>{
 
 //测试接口
 router.post('/test',(req,res,next)=>{
-  
+  const param=new Admin({
+    name:req.body.name,
+    phone:req.body.phone,
+    pwd:md5.update(req.body.pwd).digest('hex'),
+    department:req.body.department,
+    rank:req.body.rank,
+    state:'0'
+  });
+
+  Admin.find({
+    phone:req.body.phone,
+    name:req.body.name
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      if(doc.length>0){
+        res.json({
+          status:'1001',
+          msg:'该用户已经注册'
+        })
+      }else{
+        param.save((err,docs)=>{
+          if(err){
+            res.json({
+              status:'1',
+              msg:err.message
+            })
+          }else{
+            res.json({
+              status:'0',
+              msg:'注册成功'
+            })
+          }
+        })
+      }
+    }
+  })
 })
 module.exports = router;

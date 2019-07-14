@@ -369,7 +369,7 @@
       },
       //提交表单注册用户
       submitForm() {
-        this.axios.post('/admin/addadmin',{
+        this.axios.post('/admin/Addadmin',{
           name:this.formLabelAlign.name,
           phone:this.formLabelAlign.phone,
           department:this.formLabelAlign.department_id,
