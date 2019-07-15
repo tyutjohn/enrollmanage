@@ -4,6 +4,9 @@ const mongoose = require('mongoose');
 const Users = require('../models/users');
 const Department = require('../models/department');
 const Configs = require('../models/config');
+const redis=require('../util/redis');
+const svgCaptcha = require('svg-captcha')
+
 //阿里云短信
 const SMSClient = require('@alicloud/sms-sdk')
 var sendmsg = {};
@@ -918,7 +921,7 @@ router.post('/userfind', (req, res, next) => {
                       var qqNum = item.department_qq;
                       res.json({
                         status: '0',
-                        msg: '恭喜您被我们录取，请加入群:' + qqNum + ',您的小伙伴已经在群里等你了',
+                        msg: '恭喜您被我们录取，请加入qq群:' + qqNum + ',您的小伙伴已经在群里等你了',
                         result: {
                           list: docs
                         }
@@ -950,11 +953,49 @@ router.post('/userfind', (req, res, next) => {
   }
 })
 
-//test
-router.post('/test', (req, res, next) => {
-  
+//获取报名验证码
+router.post('/Rcode',(req,res,next)=>{
+  //验证码
+  var captcha = svgCaptcha.create(
+    {
+    // 翻转颜色
+    inverse: false,
+    // 字体大小
+    fontSize: 36,
+    // 噪声线条数
+    noise: 2,
+    // 宽度
+    width: 80,
+    // 高度
+    height: 30,
+  });
+  redis.setString(req.body.phone,captcha.text.toLowerCase(),60*5).then(result=>{
+    if(result){
+      res.setHeader('Content-Type', 'image/svg+xml');
+      res.write(String(captcha.data));
+      res.end();
+    }
+  }).catch(err=>{
+    console.log(err);
+    return res.json({
+      status:'1',
+      msg:'验证码获取失败'
+    })
+  })
 })
 
+//检验验证码
+router.post('/CheckRcode',(req,res,next)=>{
+  redis.getString(req.body.phone).then(result=>{
+    return res.json(result);
+  }).catch(err=>{
+    console.log(err)
+  })
+})
+//test
+router.post('/test', (req, res, next) => {
+  console.log(req.ip);
+})
 
 
 module.exports = router;

@@ -797,46 +797,6 @@ router.post('/UpdateEnrollTime',(req,res,next)=>{
 
 //测试接口
 router.post('/test',(req,res,next)=>{
-  const param=new Admin({
-    name:req.body.name,
-    phone:req.body.phone,
-    pwd:md5.update(req.body.pwd).digest('hex'),
-    department:req.body.department,
-    rank:req.body.rank,
-    state:'0'
-  });
 
-  Admin.find({
-    phone:req.body.phone,
-    name:req.body.name
-  },(err,doc)=>{
-    if(err){
-      res.json({
-        status:'1',
-        msg:err.message
-      })
-    }else{
-      if(doc.length>0){
-        res.json({
-          status:'1001',
-          msg:'该用户已经注册'
-        })
-      }else{
-        param.save((err,docs)=>{
-          if(err){
-            res.json({
-              status:'1',
-              msg:err.message
-            })
-          }else{
-            res.json({
-              status:'0',
-              msg:'注册成功'
-            })
-          }
-        })
-      }
-    }
-  })
 })
 module.exports = router;

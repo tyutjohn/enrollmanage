@@ -9,6 +9,8 @@ import Areadyenroll from '@/components/Areadyenroll'
 import Nopass from '@/components/Nopass'
 import Admin from '@/components/Admin'
 import Adminsetting from '@/components/Adminsetting'
+import Repoat from '@/components/Repoat'
+import Queryinfor from '@/components/Queryinfor'
 import { verifyToken } from '../../server/util/token';
 
 Vue.use(Router)
@@ -79,6 +81,14 @@ const routes=[
       path:'/loginconsole',
       name:'Loginconsole',
       component:Loginconsole
+    },{
+      path:'/repoat',
+      name:'Repoat',
+      component:Repoat
+    },{
+      path:'/queryinfor',
+      name:'Queryinfor',
+      component:Queryinfor
     }
   ]
 

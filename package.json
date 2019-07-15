@@ -30,6 +30,7 @@
     "morgan": "^1.9.1",
     "redis": "^2.8.0",
     "serve-favicon": "^2.5.0",
+    "svg-captcha": "^1.4.0",
     "target": "^0.0.2",
     "vue": "^2.5.2",
     "vue-axios": "^2.1.4",
