@@ -243,7 +243,12 @@
           time:time,//时间
           phones:this.phones//手机号
         }).then((res)=>{
-          console.log(res)
+          if(res.data.status=='0'){
+            this.$message('短信发送成功');
+            this.infordata();
+          }else{
+            this.$message(res.data.msg);
+          }
         },(error)=>{
           console.log(error);
         }).catch((response)=>{
@@ -282,10 +287,6 @@
        }else{
          this.infordata();
        }
-      },
-      //test
-      test(){
-  
       }
     },
 
