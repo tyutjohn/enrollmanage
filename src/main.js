@@ -10,9 +10,6 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import store from './store/index'
 
-
-// Vue.components(Button.name,Button);
-// Vue.components(Select.name,Select);
 Vue.use(ElementUI);
 Vue.use(VueAxios,axios);
 Vue.use(VueLazyload,{

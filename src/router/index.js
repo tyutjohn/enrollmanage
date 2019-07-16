@@ -11,6 +11,7 @@ import Admin from '@/components/Admin'
 import Adminsetting from '@/components/Adminsetting'
 import Repoat from '@/components/Repoat'
 import Queryinfor from '@/components/Queryinfor'
+import Datavisual from '@/components/Datavisual'
 import { verifyToken } from '../../server/util/token';
 
 Vue.use(Router)
@@ -36,6 +37,13 @@ const routes=[
           path:'/viewscore',
           name:'Viewscore',
           component:Viewscore,
+          meta: {
+            auth: true
+          },
+        },{
+          path:'/datavisual',
+          name:'Datavisual',
+          component:Datavisual,
           meta: {
             auth: true
           },

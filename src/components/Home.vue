@@ -47,6 +47,7 @@
                     <el-menu-item-group>
                     <el-menu-item index="1-1" v-if="normalconsole">通知面试</el-menu-item>
                     <el-menu-item index="1-2">面试打分</el-menu-item>
+                    <el-menu-item index="1-3">面试报名统计</el-menu-item>
                     </el-menu-item-group>     
                 </el-submenu>
                 <el-submenu index="2">
@@ -197,6 +198,9 @@ import { Loading } from 'element-ui';
             break;
           case '1-2':
             this.$router.push('/Viewscore');
+            break;
+          case '1-3':
+            this.$router.push('/Datavisual');
             break;
           case '2-1':
             this.$router.push('/Areadyinter');
