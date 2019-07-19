@@ -10,6 +10,7 @@
 * 后端：Nodejs,
 * 数据库：MongoDb,Redis
 * 接口测试：postman
+* 发的说法的身份
 
 # 项目详细介绍
 > 前台
