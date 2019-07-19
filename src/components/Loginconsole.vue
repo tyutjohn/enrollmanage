@@ -1,18 +1,23 @@
 <template>
-  <div>
-    <el-container class="container">
-      <el-form label-width="80px" :model="formLabelAlign">
-        <el-form-item label="用户名">
-          <el-input v-model="formLabelAlign.name"></el-input>
-        </el-form-item>
-        <el-form-item label="密码">
-          <el-input placeholder="请输入密码" v-model="formLabelAlign.password" show-password></el-input>
-        </el-form-item>
-        <el-form-item>
-          <el-button type="success" class="login" @click="login">登陆</el-button>
-        </el-form-item>
-      </el-form>
-    </el-container>
+  <div class="bg">
+    <div class="inputinf">
+      <span :style="top">登录</span>
+      <label for="accont">用户名</label>
+      <el-input placeholder="请输入内容" v-model="formLabelAlign.name" v-bind:style="style" name="accont" clearable>
+      </el-input>
+      <label for="pwd">密码</label>
+      <el-input placeholder="请输入密码" v-model="formLabelAlign.password" show-password v-bind:style="style" name="pwd"></el-input>
+      <el-button type="primary" plain :style="button" @click="login">登录→</el-button>
+    </div>
+    <div class="logo">
+        <span>易班</span>
+        <p>yiban.cn</p>
+    </div>
+    <div class="foot">
+        <span>后台管理系统</span>
+        <p>太原理工大学·易班发展中心</p>
+        
+    </div>
   </div>
 </template>
 <style>
@@ -26,6 +31,75 @@
     width: 100%;
   }
 
+  .bg {
+    background: url('../assets/logoo.png')center;
+    background-size: 130%;
+    background-repeat: no-repeat;
+    width: 100%;
+    margin: 0 auto;
+    height: 834px;
+    position: relative;
+  }
+ .inputinf{
+    position: absolute;
+    top: 30%;
+    left: 16%;
+ }
+  #app {
+    margin: 0;
+  }
+  label{
+    margin-top:30px;
+    color: grey;
+    text-align: left;
+    display: block;
+    font-size: 15px;
+  }
+ .logo{
+     position: absolute;
+     right: 20%;
+     color: #fff;
+     top: 38%;
+
+ }
+ .logo span{
+     font-size: 46px;
+ }
+ .logo p{
+     margin: 0;
+     margin-top: 10px;
+ }
+ .foot{
+     position: absolute;
+     right: 20%;
+     color: #fff;
+     bottom: 30%;
+ }
+ .foot span{
+     font-size: 20px;
+ }
+ @media screen and (min-width: 768px) and (max-width: 1000px){
+ .foot{
+     position: absolute;
+     right: 16%;
+     color: #fff;
+     bottom: 30%;
+ }
+ .logo{
+     position: absolute;
+     right: 20%;
+     color: #fff;
+     top: 43%;
+
+ }
+ .logo span{
+     font-size: 30px;
+ }
+ .logo p{
+     margin: 0;
+ }
+ }
+
 </style>
 <script>
   import Cookies from 'js-cookie';
@@ -37,7 +111,10 @@
         formLabelAlign: {
           name: '',
           password: '',
-        }
+        },
+        top: 'color:#6ba2fc;font-size:20px;display:block;text-align:left;',
+        style: 'width:200px; display:block;margin-top:10px;',
+        button:'margin-top:20px;text-align:left;display:block'
       }
     },
     components: {},

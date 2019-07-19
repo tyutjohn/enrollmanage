@@ -4,23 +4,25 @@
         <el-header>
           <div class="container">
             <el-row type="flex" justify="space-between">
-              <el-col :span="4"></el-col>
-              <el-col :span="4" style="font-size:16px;margin-top:10px">学生信息管理系统</el-col>
+              <el-col :span="4">
+                <img src="../assets/logo.png" style="height:50px;display:inline-block">
+                <div style="display:inline-block"><p class="p">易班发展中心</p><p class="p">--www.yiban.cn--</p></div>
+              </el-col>
               <el-col :span="2">
                 <el-popover
                   placement="bottom"
-                  width="100"
+                  width="120"
                   trigger="click">
                   <el-form :label-position="labelPosition" label-width="80px" :model="AdminUserInfor">
-                    <el-form-item label="管理员">
+                    <div class="el-user-col">
+                      <i class="el-icon-user-solid" style="margin-right:6px"></i>
                       {{AdminUserInfor.name}}
-                    </el-form-item>
-                    <el-form-item label="权限等级">
+                    </div>
+                    <div class="el-user-col">
+                      <i class="el-icon-star-on" style="margin-right:6px"></i>        
                       {{rankname(AdminUserInfor.rank)}}
-                    </el-form-item>
-                    <el-form-item>
-                      <el-button type="text" @click="logout()">退出登陆</el-button>
-                    </el-form-item>
+                    </div>        
+                      <el-button type="primary" @click="logout()" round style="width:150px">退出登陆</el-button>
                   </el-form>
                   <img :src="circleUrl" width="50px" height="50px" slot="reference">
                 </el-popover>
@@ -84,8 +86,20 @@
   </div>
 </template>
 <style>
+.p{
+  margin: 0;
+  padding:0;
+  color:#fff;
+  letter-spacing: 2px
+}
+
+.el-user-col{
+    margin-bottom: 10px;
+    font-size: 16px;
+    margin-left: 10px;
+}
 .el-header, .el-footer {
-    background-color: #B3C0D1;
+    background-color: rgb(84, 92, 100);
     color: #333;
     text-align: center;
     line-height: 30px;
@@ -93,13 +107,13 @@
   
   .el-main {
     padding: 0;
-    background-color: #E9EEF3;
+    background-color: #fffbfb5c;
     color: #333;
     text-align: center;
   }
 
   .container{
-    width:80%;
+    width:96%;
     margin:0 auto;
   }
   
