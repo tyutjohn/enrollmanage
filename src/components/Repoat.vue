@@ -27,7 +27,7 @@
         </el-form-item>
         <el-form-item label="个人介绍">
             <el-input v-model="form.introduce" type="textarea" :rows="2"
-  placeholder="请输入个人介绍"></el-input>
+  placeholder="请输入个人介绍" maxlength="80" show-word-limit></el-input>
         </el-form-item>
         <el-form-item label="学号">
             <el-input v-model="form.schoolNum" type="number"></el-input>

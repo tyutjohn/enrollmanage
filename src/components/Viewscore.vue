@@ -79,7 +79,7 @@
                 <el-button type="primary" icon="el-icon-edit" plain>{{userinformation.name}}的个人报名信息</el-button>
               </el-button-group>
               <div class="flex">
-                <div class="flex-dir flex-left">
+                <div class="flex-dir flex-left" style="width:220px">
                   <ul class="user-ul">
                     <li><i class="el-icon-user" style="margin-right: 6px;"></i>姓名:{{userinformation.name}}</li>
                     <li><i class="el-icon-female" style="margin-right: 6px;"></i>性别:{{userinformation.sex}}</li>
@@ -90,14 +90,14 @@
                     <li style="display:none" id='userId'>{{userinformation._id}}</li>
                   </ul>
                 </div>
-                <div class="flex-dir flex-center">
+                <div class="flex-dir flex-center" style="width:300px">
                   <ul class="user-ul">
                     <li><i class="el-icon-tickets" style="margin-right: 6px;"></i>第一志愿:{{getuserpartname(userinformation.department)}}</li>
                     <li><i class="el-icon-document" style="margin-right: 6px;"></i>第二志愿:{{getuserpartname(userinformation.department2)}}</li>
                     <li><i class="el-icon-s-order" style="margin-right: 6px;"></i>个人介绍:{{userinformation.introduce}}</li>
                   </ul>
                 </div>
-                <div class="flex-dir flex-right">
+                <div class="flex-dir flex-right" style="width:220px">
                   <el-input
                     type="number"
                     placeholder="请输入分数"
