@@ -1010,19 +1010,22 @@ router.get('/CampusNum',(req,res,next)=>{
         Users.find({
           'campus':'虎峪'
         },(err,docss)=>{
-          res.json({
-            status:'0',
-            msg:'suc',
-            result:[{
-              value:docs.length,
-              name:'迎西'
-            },{
-              value:docss.length,
-              name:'虎峪'
-            },{
-              value:doc.length,
-              name:'明向'
-            }]
+          Users.find({},(err,count)=>{
+            res.json({
+              status:'0',
+              msg:'suc',
+              result:[{
+                value:docs.length,
+                name:'迎西'
+              },{
+                value:docss.length,
+                name:'虎峪'
+              },{
+                value:doc.length,
+                name:'明向'
+              }],
+              num:count.length
+            })
           })
         })
       })

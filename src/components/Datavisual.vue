@@ -2,6 +2,7 @@
   <div>
     <div style="display:inline-block;margin-top:50px"><v-chart :options='department'/></div>
     <div style="display:inline-block;margin-top:50px"><v-chart :options="campus"/></div>
+    <div style="font-size:20px;font-weight:700;letter-spacing: 2px;margin-top:30px">总报名人数:{{alluser}}</div>
   </div>
 </template>
 <style>
@@ -81,7 +82,8 @@
                   }
               }
           ]
-        }
+        },
+        alluser:''
       }
     },
 
@@ -104,6 +106,7 @@
         this.axios.get('/users/CampusNum').then((res)=>{
           if(res.data.status=='0'){
             this.campus.series[0].data=res.data.result
+            this.alluser=res.data.num
           }
         })
       },
