@@ -103,7 +103,7 @@
       </el-table>
     </el-tab-pane>
     <el-tab-pane label="用户添加" name="second">
-      <el-form :label-position="labelPosition" label-width="100px" :model="formLabelAlign" :inline="true" size="small">
+      <el-form :label-position="labelPosition" label-width="100px" :model="formLabelAlign" style="width:300px;margin-left:30px">
         <el-form-item label="注册用户名">
           <el-input v-model="formLabelAlign.name"></el-input>
         </el-form-item>
@@ -123,7 +123,7 @@
           </el-select>
         </el-form-item>
       </el-form>
-      <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" :inline="true">
+      <el-form :model="ruleForm" status-icon :rules="rules" ref="ruleForm" label-width="100px" class="demo-ruleForm" style="width:300px;margin-left:30px">
         <el-form-item label="密码" prop="pass">
           <el-input type="password" v-model="ruleForm.pass" autocomplete="off"></el-input>
         </el-form-item>

@@ -992,9 +992,138 @@ router.post('/CheckRcode',(req,res,next)=>{
     console.log(err)
   })
 })
+
+//获取各个校区的报名人数
+router.get('/CampusNum',(req,res,next)=>{
+  Users.find({
+    'campus':'明向'
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      Users.find({
+        'campus':'迎西'
+      },(err,docs)=>{
+        Users.find({
+          'campus':'虎峪'
+        },(err,docss)=>{
+          res.json({
+            status:'0',
+            msg:'suc',
+            result:[{
+              value:docs.length,
+              name:'迎西'
+            },{
+              value:docss.length,
+              name:'虎峪'
+            },{
+              value:doc.length,
+              name:'明向'
+            }]
+          })
+        })
+      })
+    }
+  })
+})
+
+//获取各个部门的报名人数
+router.get('/DepartNum',(req,res,next)=>{
+  Users.find({
+    'department':'1'
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      Users.find({
+        'department':'2'
+      },(err,docs)=>{
+        Users.find({
+          'department':'3'
+        },(err,docss)=>{
+          Users.find({
+            'department':'4'
+          },(err,docsss)=>{
+            Users.find({
+              'department':'5'
+            },(err,docssss)=>{
+              Users.find({
+                'department':'6'
+              },(err,docsssss)=>{
+                res.json({
+                  status:'0',
+                  msg:'suc',
+                  result:[{
+                    value:doc.length,
+                    name:'技术组'
+                  },{
+                    value:docs.length,
+                    name:'设计组'
+                  },{
+                    value:docss.length,
+                    name:'事务组'
+                  },{
+                    value:docsss.length,
+                    name:'企划组'
+                  },{
+                    value:docssss.length,
+                    name:'外宣组'
+                  },{
+                    value:docsssss.length,
+                    name:'采编组'
+                  }]
+                })
+              })
+            })
+          })
+        })
+      })
+    }
+  })
+})
+
+
 //test
 router.post('/test', (req, res, next) => {
-  console.log(req.ip);
+  Users.find({
+    'campus':'明向'
+  },(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      Users.find({
+        'campus':'迎西'
+      },(err,docs)=>{
+        Users.find({
+          'campus':'虎峪'
+        },(err,docss)=>{
+          res.json({
+            status:'0',
+            msg:'suc',
+            result:[{
+              value:docs.length,
+              name:'迎西'
+            },{
+              value:docss.length,
+              name:'虎峪'
+            },{
+              value:doc.length,
+              name:'明向'
+            }]
+          })
+        })
+      })
+    }
+  })
 })
 
 

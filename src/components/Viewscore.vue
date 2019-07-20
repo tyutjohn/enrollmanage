@@ -73,24 +73,28 @@
           <el-button type="danger" icon="el-icon-brush" circle @click="enrollLoading(scope.row._id)"></el-button>
           <el-button type="warning" icon="el-icon-s-tools" circle @click="userAdjust(scope.row._id)"></el-button>
           <el-dialog :visible.sync="dialogFormVisible">
-            <div slot="title" class="dialog-title">{{userinformation.name}}的个人报名信息</div>
+            <div slot="title" class="dialog-title">面试打分控制台</div>
             <div>
               <el-button-group>
-                <el-button type="primary" icon="el-icon-edit" plain>资料</el-button>
+                <el-button type="primary" icon="el-icon-edit" plain>{{userinformation.name}}的个人报名信息</el-button>
               </el-button-group>
               <div class="flex">
                 <div class="flex-dir flex-left">
-                  <ul>
-                    <li>姓名:{{userinformation.name}}</li>
-                    <li>性别:{{userinformation.sex}}</li>
-                    <li>专业:{{userinformation.major}}</li>
-                    <li>班级:{{userinformation.class}}</li>
-                    <li>学号:{{userinformation.schoolNum}}</li>
-                    <li>第一志愿:{{getuserpartname(userinformation.department)}}</li>
-                    <li>第二志愿:{{getuserpartname(userinformation.department2)}}</li>
-                    <li>校区:{{userinformation.campus}}</li>
-                    <li>个人介绍:{{userinformation.introduce}}</li>
+                  <ul class="user-ul">
+                    <li><i class="el-icon-user" style="margin-right: 6px;"></i>姓名:{{userinformation.name}}</li>
+                    <li><i class="el-icon-female" style="margin-right: 6px;"></i>性别:{{userinformation.sex}}</li>
+                    <li><i class="el-icon-reading" style="margin-right: 6px;"></i>专业:{{userinformation.major}}</li>
+                    <li><i class="el-icon-s-home" style="margin-right: 6px;"></i>班级:{{userinformation.class}}</li>
+                    <li><i class="el-icon-s-grid" style="margin-right: 6px;"></i>学号:{{userinformation.schoolNum}}</li>   
+                    <li><i class="el-icon-school" style="margin-right: 6px;"></i>校区:{{userinformation.campus}}</li>                
                     <li style="display:none" id='userId'>{{userinformation._id}}</li>
+                  </ul>
+                </div>
+                <div class="flex-dir flex-center">
+                  <ul class="user-ul">
+                    <li><i class="el-icon-tickets" style="margin-right: 6px;"></i>第一志愿:{{getuserpartname(userinformation.department)}}</li>
+                    <li><i class="el-icon-document" style="margin-right: 6px;"></i>第二志愿:{{getuserpartname(userinformation.department2)}}</li>
+                    <li><i class="el-icon-s-order" style="margin-right: 6px;"></i>个人介绍:{{userinformation.introduce}}</li>
                   </ul>
                 </div>
                 <div class="flex-dir flex-right">
@@ -146,6 +150,24 @@
 
 .el-dialog__body{
   padding:0;
+}
+
+.dialog-title{
+  font-size: 20px;
+  font-weight: 600;
+  color: #1b7dd2;
+}
+
+.user-ul{
+  list-style: none;
+  font-size: 16px;
+  color: #093f6f;
+  font-weight: 500;
+  letter-spacing: 2px;
+}
+
+.user-ul li{
+  margin-top:10px;
 }
 
 .el-button-group .el-button--primary{

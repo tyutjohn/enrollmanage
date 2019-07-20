@@ -42,6 +42,7 @@
 
     methods: {
         find(){
+            this.result='';//初始化
             this.show=true;
             this.axios.post('/users/userfind',{
                 name:this.form.name,

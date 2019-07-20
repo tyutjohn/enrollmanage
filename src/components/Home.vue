@@ -8,6 +8,7 @@
                 <img src="../assets/logo.png" style="height:50px;display:inline-block">
                 <div style="display:inline-block"><p class="p">易班发展中心</p><p class="p">--www.yiban.cn--</p></div>
               </el-col>
+              <el-row><p class="header-p">招新报名管理系统</p></el-row>
               <el-col :span="2">
                 <el-popover
                   placement="bottom"
@@ -24,7 +25,7 @@
                     </div>        
                       <el-button type="primary" @click="logout()" round style="width:150px">退出登陆</el-button>
                   </el-form>
-                  <img :src="circleUrl" width="50px" height="50px" slot="reference">
+                  <img src="../assets/avter.png" width="60px" height="60px" slot="reference">
                 </el-popover>
               </el-col>
             </el-row>
@@ -93,6 +94,16 @@
   letter-spacing: 2px
 }
 
+.header-p{
+    font-size: 24px;
+    font-weight: 700;
+    color: #fff;
+    letter-spacing: 4px;
+    margin: 0;
+    padding: 0;
+    margin-top: 10px;
+}
+
 .el-user-col{
     margin-bottom: 10px;
     font-size: 16px;
@@ -159,7 +170,6 @@ import { Loading } from 'element-ui';
       return {
         adminconsole:false,//超级管理员
         normalconsole:false,//普通管理员
-        circleUrl:"https://cube.elemecdn.com/3/7c/3ea6beec64369c2642b92c6726f1epng.png",//管理员默认头像
         AdminUserInfor:{//管理员登陆信息
           name:'',
           rank:''
