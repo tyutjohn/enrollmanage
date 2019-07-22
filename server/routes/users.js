@@ -929,6 +929,11 @@ router.post('/userfind', (req, res, next) => {
                     })
                   }
                 })
+              }else{
+                res.json({
+                  status:'0',
+                  msg:'您的表现正在被商讨中，请耐心等待结果'
+                })
               }
             });
           } else {

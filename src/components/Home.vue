@@ -148,6 +148,7 @@
   .el-menu-vertical-demo{
     width: 200px;
     min-height: 700px;
+    height:100%;
   }
 
   .footer{
