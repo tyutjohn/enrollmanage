@@ -167,42 +167,42 @@
       </el-tab-pane>
       <el-tab-pane label="开放时间管理">
         <el-row class="row-bg">
-          <label><p class="time-font">报名系统开放时间:</p>{{AliyunConfig.signuptime}}</label>
+          <label><p class="time-font">报名系统开放时间:</p>{{AliyunConfig.signuptime | formatDate}}</label>
           <el-date-picker
             v-model="signuptime"  
             placeholder="选择报名开始时间"
             type="datetime"
             format="yyyy 年 MM 月 dd 日 HH 小时 mm 分"
-            value-format="yyyy年MM月dd日HH时mm分"
+            value-format="timestamp"
             :disabled="timeconsole">
           </el-date-picker>
-          <label><p class="time-font">报名系统结束时间:</p>{{AliyunConfig.signdowntime}}</label>
+          <label><p class="time-font">报名系统结束时间:</p>{{AliyunConfig.signdowntime | formatDate}}</label>
           <el-date-picker
             v-model="signdowntime"  
             placeholder="选择报名结束时间"
             type="datetime"
             format="yyyy 年 MM 月 dd 日 HH 小时 mm 分"
-            value-format="yyyy年MM月dd日HH时mm分"
+            value-format="timestamp"
             :disabled="timeconsole">
           </el-date-picker>
         </el-row>
         <el-row class="row-bg">
-          <label><p class="time-font">面试查询开放时间:</p>{{AliyunConfig.queryuptime}}</label>
+          <label><p class="time-font">面试查询开放时间:</p>{{AliyunConfig.queryuptime | formatDate}}</label>
           <el-date-picker
             v-model="queryuptime"  
             placeholder="选择结果查询开始时间"
             type="datetime"
             format="yyyy 年 MM 月 dd 日 HH 小时 mm 分"
-            value-format="yyyy年MM月dd日HH时mm分"
+            value-format="timestamp"
             :disabled="timeconsole">
           </el-date-picker>
-          <label><p class="time-font">面试查询结束时间:</p>{{AliyunConfig.querydowntime}}</label>
+          <label><p class="time-font">面试查询结束时间:</p>{{AliyunConfig.querydowntime | formatDate}}</label>
           <el-date-picker
             v-model="querydowntime"  
             placeholder="选择结果查询结束时间"
             type="datetime"
             format="yyyy 年 MM 月 dd 日 HH 小时 mm 分"
-            value-format="yyyy年MM月dd日HH时mm分"
+            value-format="timestamp"
             :disabled="timeconsole">
           </el-date-picker>
         </el-row>
@@ -518,9 +518,12 @@
           console.log(response)
         })
       },
-      //test
-      test(){
-        console.log(this.timedate);
+    },
+    filters:{
+      formatDate: function (value) {
+        let d=new Date(value);
+        let times=d.getFullYear()+'年'+(d.getMonth()+1)+'月'+d.getDate()+'日'+d.getHours()+'时'+d.getMinutes()+'分';
+        return times;
       }
     },
 

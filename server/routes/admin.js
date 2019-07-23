@@ -795,8 +795,62 @@ router.post('/UpdateEnrollTime',(req,res,next)=>{
   })
 })
 
+//查询入口时间监测
+router.post('/QueryTime',(req,res,next)=>{
+  let nowtime=req.body.time;
+  Config.findOne({},(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      let queryuptime=doc.queryuptime
+      let querydowntime=doc.querydowntime
+      if(queryuptime<nowtime&&nowtime<querydowntime){
+        res.json({
+          status:'0',
+          msg:'suc'
+        })
+      }else{
+        res.json({
+          status:'1001',
+          msg:'查询时间不在规定时间段内，入口未开启'
+        })
+      }
+    }
+  })
+})
+
+//报名入口时间监测
+router.post('/ReportTime',(req,res,next)=>{
+  let nowtime=req.body.time;
+  Config.findOne({},(err,doc)=>{
+    if(err){
+      res.json({
+        status:'1',
+        msg:err.message
+      })
+    }else{
+      let signuptime=doc.signuptime
+      let signdowntime=doc.signdowntime
+      if(signuptime<nowtime&&nowtime<signdowntime){
+        res.json({
+          status:'0',
+          msg:'suc'
+        })
+      }else{
+        res.json({
+          status:'1001',
+          msg:'报名入口已关闭'
+        })
+      }
+    }
+  })
+})
+
 //测试接口
 router.post('/test',(req,res,next)=>{
-
+  
 })
 module.exports = router;

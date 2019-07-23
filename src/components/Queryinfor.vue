@@ -26,7 +26,7 @@
               </div>
           </div>
           <div class="button">
-              <el-button type="primary" style="width:94%" @click="find()">查询</el-button>
+              <el-button type="primary" style="width:94%" @click="find()" :disabled="disabled">查询</el-button>
           </div>
       </div>
   </div>
@@ -96,6 +96,7 @@
           },
           show1:true,
           show2:false,
+          disabled:true
       };
     },
 
@@ -105,7 +106,9 @@
 
     beforeMount() {},
 
-    mounted() {},
+    mounted() {
+        this.CheckTime();
+    },
 
     methods: {
         find(){
@@ -123,6 +126,24 @@
                 }
             }).catch((response)=>{
                 console.log(response)
+            })
+        },
+        //监测查询时间是否开放
+        CheckTime(){
+            let time=new Date().getTime();
+            this.axios.post('/admin/QueryTime',{
+                time:time
+            }).then((res)=>{
+                if(res.data.status=='0'){
+                    this.disabled=false;
+                }else{
+                    this.$message(res.data.msg);
+                    this.show1=false
+                    this.show2=true;
+                    this.result=res.data.msg;
+                }
+            }).catch((response)=>{
+                console.log(response);
             })
         }
     },
