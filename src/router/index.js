@@ -12,6 +12,7 @@ import Adminsetting from '@/components/Adminsetting'
 import Repoat from '@/components/Repoat'
 import Queryinfor from '@/components/Queryinfor'
 import Datavisual from '@/components/Datavisual'
+import Error404 from '@/components/Error404'
 import { verifyToken } from '../../server/util/token';
 
 Vue.use(Router)
@@ -97,6 +98,13 @@ const routes=[
       path:'/queryinfor',
       name:'Queryinfor',
       component:Queryinfor
+    },{
+      path:'/404',
+      name:'Error404',
+      component:Error404
+    },{
+      path: "*", // 此处需特别注意置于最底部
+      redirect: "/404"
     }
   ]
 

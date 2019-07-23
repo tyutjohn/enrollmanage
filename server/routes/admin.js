@@ -842,7 +842,7 @@ router.post('/ReportTime',(req,res,next)=>{
       }else{
         res.json({
           status:'1001',
-          msg:'报名入口已关闭'
+          msg:'报名时间不在规定时间段内，入口未开启'
         })
       }
     }

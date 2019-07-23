@@ -27,7 +27,7 @@ app.use((req,res,next)=>{
   if(req.cookies.username){
     next();
   }else{
-    if(req.originalUrl=='/admin/login'|| req.originalUrl=='/users/Rcode'|| req.originalUrl=='/users/apply'||req.originalUrl=='/admin/test'||req.originalUrl=='/users/userfind'||req.originalUrl=='/users/departments'||req.originalUrl=='/users/CheckRcode'){
+    if(req.originalUrl=='/admin/login'|| req.originalUrl=='/users/Rcode'|| req.originalUrl=='/users/apply'||req.originalUrl=='/admin/QueryTime'||req.originalUrl=='/users/userfind'||req.originalUrl=='/users/departments'||req.originalUrl=='/users/CheckRcode'||req.originalUrl=='/admin/ReportTime'){
       next();
     }else{
       res.json({
