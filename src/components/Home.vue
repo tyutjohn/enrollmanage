@@ -86,7 +86,7 @@
     </el-container>
   </div>
 </template>
-<style>
+<style scoped>
 .p{
   margin: 0;
   padding:0;

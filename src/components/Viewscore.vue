@@ -138,7 +138,7 @@
     </el-pagination>
   </div>
 </template>
-<style>
+<style scoped>
 .search{
   margin-left: 50px;
 }

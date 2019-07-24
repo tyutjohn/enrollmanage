@@ -1,5 +1,5 @@
 <template>
-  <div class="bg">
+  <div class="bgg">
     <div class="inputinf">
       <span :style="top">登录</span>
       <label for="accont">用户名</label>
@@ -20,7 +20,7 @@
     </div>
   </div>
 </template>
-<style>
+<style scoped>
   .container {
     width: 60%;
     margin: 0 auto;
@@ -31,7 +31,7 @@
     width: 100%;
   }
 
-  .bg {
+  .bgg {
     background: url('../assets/logoo.png')center;
     background-size: 130%;
     background-repeat: no-repeat;

@@ -5,7 +5,7 @@
     <div style="font-size:20px;font-weight:700;letter-spacing: 2px;margin-top:30px">总报名人数:{{alluser}}</div>
   </div>
 </template>
-<style>
+<style scoped>
 .echarts {
   width: 100%;
   height: 100%;

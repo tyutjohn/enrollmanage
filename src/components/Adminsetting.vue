@@ -216,7 +216,7 @@
     </el-tabs>
   </div>
 </template>
-<style>
+<style scoped>
 .Smsadd{
   float:right;
   margin-right: 30px;

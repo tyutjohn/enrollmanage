@@ -4,7 +4,7 @@
     <div class="text">真抱歉，您访问的页面走丢了</div>
   </div>
 </template>
-<style>
+<style scoped>
 .bg{
   height: 24rem;
   background: no-repeat center;

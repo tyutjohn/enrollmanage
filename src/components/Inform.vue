@@ -116,7 +116,7 @@
     </div>
   </div>
 </template>
-<style>
+<style scoped>
 .el-table--border {
     padding-left: 20px;
     padding-top:20px;

@@ -77,7 +77,7 @@
     </div>
   </div>
 </template>
-<style>
+<style scoped>
   .bottom-top {
     margin: 0 auto;
   }

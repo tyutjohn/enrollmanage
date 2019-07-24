@@ -190,7 +190,7 @@
     </el-tabs>
   </div>
 </template>
-<style>
+<style scoped>
 .header-tabs{
   margin:30px
 }
