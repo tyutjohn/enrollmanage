@@ -6,7 +6,7 @@
       <el-input placeholder="请输入内容" v-model="formLabelAlign.name" v-bind:style="style" name="accont" clearable>
       </el-input>
       <label for="pwd">密码</label>
-      <el-input placeholder="请输入密码" v-model="formLabelAlign.password" show-password v-bind:style="style" name="pwd"></el-input>
+      <el-input placeholder="请输入密码" v-model="formLabelAlign.password" show-password v-bind:style="style" name="pwd" @keyup.enter.native='login'></el-input>
       <el-button type="primary" plain :style="button" @click="login">登录→</el-button>
     </div>
     <div class="logo">
