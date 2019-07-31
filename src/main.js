@@ -9,9 +9,11 @@ import VueLazyload from 'vue-lazyload'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import store from './store/index'
+import VueJsonp from 'vue-jsonp'
 
 Vue.use(ElementUI);
 Vue.use(VueAxios,axios);
+Vue.use(VueJsonp);
 Vue.use(VueLazyload,{
   loading:'static/loading-svg/loading-bars.svg',
   try:3
