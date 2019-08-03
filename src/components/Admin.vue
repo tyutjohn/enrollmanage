@@ -198,6 +198,7 @@
 </style>
 
 <script>
+import { request } from 'http';
 
   export default {
     data () {
@@ -291,7 +292,29 @@
       //动态部门
       getdepartname(){
         return function(res){
-          return this.departdata[res].department_name;
+          switch(res){
+            case '0':
+              return '未填写'
+              break;
+            case '1':
+              return '技术组'
+              break;
+            case '2':
+              return '设计组'
+              break;
+            case '3':
+              return '事务组'
+              break;
+            case '4':
+              return '企划组'
+              break;
+            case '5':
+              return '外宣组'
+              break;
+            case '6':
+              return '采编组'
+              break;
+          }
         }
       }
     },
