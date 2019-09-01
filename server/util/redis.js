@@ -1,3 +1,10 @@
+/*
+ * @Author: johnwang
+ * @since: 2019-07-15 11:08:30
+ * @lastTime: 2019-08-31 22:30:47
+ * @LastAuthor: Do not edit
+ * @Github: https://github.com/tyutjohn
+ */
 const redis=require('redis');
 const Redisconfig=require('../config/redis').redis
 //连接redis数据库
@@ -56,8 +63,3 @@ redisHelper.getString = (key) => {
 
 module.exports = redisHelper;
 
-// redisHelper.setString('name','w候人兮猗',60 * 3).then((res)=>{
-//     console.log('设置成功')
-// }).catch((err=>{
-//     console.log('设置失败',err)
-// }))

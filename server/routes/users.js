@@ -1,3 +1,10 @@
+/*
+ * @Author: johnwang
+ * @since: 2019-05-21 10:22:54
+ * @lastTime: 2019-09-01 21:19:35
+ * @LastAuthor: Do not edit
+ * @Github: https://github.com/tyutjohn
+ */
 const express = require('express');
 const router = express.Router();
 const mongoose = require('mongoose');
@@ -7,11 +14,8 @@ const Configs = require('../models/config');
 const redis=require('../util/redis');
 const svgCaptcha = require('svg-captcha')
 
-//阿里云短信
-const SMSClient = require('@alicloud/sms-sdk')
-var sendmsg = {};
-
 //连接数据库
+mongoose.set('useCreateIndex',true);
 mongoose.connect('mongodb://127.0.0.1:27017/enroll');
 
 mongoose.connection.on('connected', function () {
@@ -21,6 +25,10 @@ mongoose.connection.on('connected', function () {
 mongoose.connection.on('disconnected', function () {
   console.log("MonogDb connected disconnected")
 });
+
+//阿里云短信
+const SMSClient = require('@alicloud/sms-sdk')
+var sendmsg = {};
 
 //发送短信接口
 router.post('/sendmsg', (req, res, next) => {
@@ -135,16 +143,12 @@ router.post('/', function (req, res, next) {
         msg: err.message
       })
     } else {
-      Users.where({'state':'0'}).count((err,count)=>{
-        let countlen=count;
-        res.json({
-          status: '0',
-          msg: '',
-          result: {
-            count: countlen,
-            list: doc
-          }
-        })
+      res.json({
+        status:'0',
+        result:{
+          list:doc,
+          length:doc.length
+        }
       })
     }
   }).limit(1*pageSize)//读取条数
@@ -166,16 +170,12 @@ router.post('/classify', (req, res, next) => {
         msg: err.message,
       })
     } else {
-      Users.where({'state':'0','department':department}).count((err,count)=>{
-        let countlen=count;
-        res.json({
-          status: '0',
-          msg: '',
-          result: {
-            count: countlen,
-            list: doc
-          }
-        })
+      res.json({
+        status:'0',
+        result:{
+          list:doc,
+          length:doc.length
+        }
       })
     }
   }).limit(1*pageSize)//读取条数
@@ -343,16 +343,13 @@ router.post('/mark', (req, res, next) => {
         mag: err.message
       })
     } else {
-      Users.where({'state':'1','state2':'0'}).count((err,count)=>{
-        let countlen=count;
-        res.json({
-          status: '0',
-          msg: '',
-          result: {
-            count: countlen,
-            list: doc
-          }
-        })
+      res.json({
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc
+        }
       })
     }
   }).limit(1*pageSize)//读取条数
@@ -375,16 +372,13 @@ router.post('/markdepart', (req, res, next) => {
         msg: err.message
       })
     } else {
-      Users.where({'state':'1','state2':'0','department':department}).count((err,count)=>{
-        let countlen=count;
-        res.json({
-          status: '0',
-          msg: '',
-          result: {
-            count: countlen,
-            list: doc
-          }
-        })
+      res.json({
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc
+        }
       })
     }
   }).limit(1*pageSize)//读取条数
@@ -421,37 +415,26 @@ router.post('/enrollScore', (req, res, next) => {
   var id = mongoose.Types.ObjectId(req.body.id);
   if(!score==''){
     if(!evaluate==''){
-      Users.findOne({
+      Users.update({
         '_id': id
-      }, (err, doc) => {
+      }, {
+        $set: {
+          'score': score,
+          'evaluate': evaluate,
+          'state2': '1',
+          'pass':''
+        }
+      }, (err, docs) => {
         if (err) {
           res.json({
             status: '1',
             msg: err.message
           })
         } else {
-          Users.update({
-            '_id': id
-          }, {
-            $set: {
-              'score': score,
-              'evaluate': evaluate,
-              'state2': '1',
-              'pass':''
-            }
-          }, (err, docs) => {
-            if (err) {
-              res.json({
-                status: '1',
-                msg: err.message
-              })
-            } else {
-              res.json({
-                status: '0',
-                msg: '打分成功',
-                result: ''
-              })
-            }
+          res.json({
+            status: '0',
+            msg: '打分成功',
+            result: ''
           })
         }
       })
@@ -472,33 +455,22 @@ router.post('/enrollScore', (req, res, next) => {
 //延迟面试
 router.post('/loading', (req, res, next) => {
   var id = mongoose.Types.ObjectId(req.body.id);
-  Users.findOne({
+  Users.update({
     '_id': id
-  }, (err, doc) => {
+  }, {
+    $set: {
+      'state': '0'
+    }
+  }, (err, docs) => {
     if (err) {
       res.json({
         status: '1',
         msg: err.message
       })
     } else {
-      Users.update({
-        '_id': id
-      }, {
-        $set: {
-          'state': '0'
-        }
-      }, (err, docs) => {
-        if (err) {
-          res.json({
-            status: '1',
-            msg: err.message
-          })
-        } else {
-          res.json({
-            status: '0',
-            msg: '已经延迟面试'
-          })
-        }
+      res.json({
+        status: '0',
+        msg: '已经延迟面试'
       })
     }
   })
@@ -568,16 +540,13 @@ router.post('/ainterview', (req, res, next) => {
         msg: err.message
       })
     } else {
-      Users.where({'state2':'1','pass':''}).count((err,count)=>{
-        let countlen=count;
-        res.json({
-          status: '0',
-          msg: '',
-          result: {
-            count: countlen,
-            list: doc
-          }
-        })
+      res.json({
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc
+        }
       })
     }
   }).sort({'score':-1})
@@ -601,16 +570,13 @@ router.post('/ainterdepart', (req, res, next) => {
         msg: err.message
       })
     } else {
-      Users.where({'state2':'1','pass':'','department':department}).count((err,count)=>{
-        let countlen=count;
-        res.json({
-          status: '0',
-          msg: '',
-          result: {
-            count: countlen,
-            list: doc
-          }
-        })
+      res.json({
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc
+        }
       })
     }
   }).sort({'score':-1})
@@ -773,16 +739,13 @@ router.post('/admitall', (req, res, next) => {
         msg: err.message
       })
     } else {
-      Users.where({'pass':'1'}).count((err,count)=>{
-        let countlen=count;
-        res.json({
-          status: '0',
-          msg: '',
-          result: {
-            count: countlen,
-            list: doc
-          }
-        })
+      res.json({
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc
+        }
       })
     }
   }).sort({'score':-1})
@@ -805,16 +768,13 @@ router.post('/admitdepart', (req, res, next) => {
         msg: err.message
       })
     } else {
-      Users.where({'pass':'1','department':department}).count((err,count)=>{
-        let countlen=count;
-        res.json({
-          status: '0',
-          msg: '',
-          result: {
-            count: countlen,
-            list: doc
-          }
-        })
+      res.json({
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc
+        }
       })
     }
   }).sort({'score':-1})
@@ -835,16 +795,13 @@ router.post('/admitnopass', (req, res, next) => {
         msg: err.message
       })
     } else {
-      Users.where({'pass':'0'}).count((err,count)=>{
-        let countlen=count;
-        res.json({
-          status: '0',
-          msg: '',
-          result: {
-            count: countlen,
-            list: doc
-          }
-        })
+      res.json({
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc
+        }
       })
     }
   }).sort({'score':-1})
@@ -867,16 +824,13 @@ router.post('/admitnopassdep',(req,res,next)=>{
         msg:err.message
       })
     }else{
-      Users.where({'pass':'0','department':department}).count((err,count)=>{
-        let countlen=count;
-        res.json({
-          status: '0',
-          msg: '',
-          result: {
-            count: countlen,
-            list: doc
-          }
-        })
+      res.json({
+        status: '0',
+        msg: '',
+        result: {
+          count: doc.length,
+          list: doc
+        }
       })
     }
   }).sort({'score':-1})
@@ -1099,39 +1053,23 @@ router.get('/DepartNum',(req,res,next)=>{
 
 //test
 router.post('/test', (req, res, next) => {
-  Users.find({
-    'campus':'明向'
-  },(err,doc)=>{
-    if(err){
-      res.json({
-        status:'1',
-        msg:err.message
-      })
-    }else{
-      Users.find({
-        'campus':'迎西'
-      },(err,docs)=>{
-        Users.find({
-          'campus':'虎峪'
-        },(err,docss)=>{
-          res.json({
-            status:'0',
-            msg:'suc',
-            result:[{
-              value:docs.length,
-              name:'迎西'
-            },{
-              value:docss.length,
-              name:'虎峪'
-            },{
-              value:doc.length,
-              name:'明向'
-            }]
-          })
-        })
-      })
-    }
-  })
+  //聚合管道查询单人信息
+    // var id=mongoose.Types.ObjectId(req.body.id);
+    // Users.aggregate([{$lookup:{
+    //   from:'departments',
+    //   localField:'department',
+    //   foreignField:'department_id',
+    //   as:'item'
+    // }},{
+    //   $match:{
+    //     '_id':id
+    //   }
+    // }],(err,doc)=>{
+    //   res.json({
+    //     status:'0',
+    //     msg:doc
+    //   })
+    // })
 })
 
 

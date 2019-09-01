@@ -1,3 +1,10 @@
+/*
+ * @Author: johnwang
+ * @since: 2019-05-21 18:38:55
+ * @lastTime: 2019-09-01 21:25:02
+ * @LastAuthor: Do not edit
+ * @Github: https://github.com/tyutjohn
+ */
 const express = require('express');
 const router = express.Router();
 const Admin = require('./../models/admin');
@@ -139,37 +146,26 @@ router.post('/checktoken',(req,res,next)=>{
 //管理员退出
 router.post('/logout', (req, res, next) => {
   let username=req.body.username;
-  Admin.findOne({
+  Admin.update({
     'name':username
-  },(err,doc)=>{
+  },{
+    $set:{
+      'accesstoken':''
+    }
+  },(err,docs)=>{
     if(err){
       res.json({
         status:'1',
         msg:err.message
       })
     }else{
-      Admin.update({
-        'name':username
-      },{
-        $set:{
-          'accesstoken':''
-        }
-      },(err,docs)=>{
-        if(err){
-          res.json({
-            status:'1',
-            msg:err.message
-          })
-        }else{
-          res.cookie('username', '', {
-            path: '/',
-            maxAge: -1
-          });
-          res.json({
-            status:'0',
-            msg:'退出成功'
-          })
-        }
+      res.cookie('username', '', {
+        path: '/',
+        maxAge: -1
+      });
+      res.json({
+        status:'0',
+        msg:'退出成功'
       })
     }
   })
@@ -227,15 +223,6 @@ router.post('/alteradmin',(req,res,next)=>{
       phone=req.body.phone,
       department=req.body.department,
       rank=req.body.rank
-  Admin.findOne({
-    'phone':phone
-  },(err,doc)=>{
-    if(err){
-      res.json({
-        status:'1',
-        msg:err.message
-      })
-    }else{
       Admin.update({
         'phone':phone
       },{
@@ -258,41 +245,28 @@ router.post('/alteradmin',(req,res,next)=>{
           })
         }
       })
-    }
-  })
 })
 
 //修改管理员密码
 router.post('/alteradminpwd',(req,res,next)=>{
   var pwd=utility.md5(req.body.pwd);
   let phone=req.body.phone
-  Admin.findOne({
+  Admin.update({
     'phone':phone
-  },(err,doc)=>{
+  },{
+    $set:{
+      'pwd':pwd
+    }
+  },(err,docs)=>{
     if(err){
       res.json({
         status:'1',
         msg:err.message
       })
     }else{
-      Admin.update({
-        'phone':phone
-      },{
-        $set:{
-          'pwd':pwd
-        }
-      },(err,docs)=>{
-        if(err){
-          res.json({
-            status:'1',
-            msg:err.message
-          })
-        }else{
-          res.json({
-            status:'0',
-            msg:'密码修改成功'
-          })
-        }
+      res.json({
+        status:'0',
+        msg:'密码修改成功'
       })
     }
   })
@@ -300,34 +274,23 @@ router.post('/alteradminpwd',(req,res,next)=>{
 
 //禁用管理员
 router.post('/deleteadmin',(req,res,next)=>{
-  Admin.findOne({
+  Admin.update({
     'name':req.body.name
-  },(err,doc)=>{
+  },{
+    $set:{
+      'state':'1',
+      'delete_time':Date.now()
+    }
+  },(err,docs)=>{
     if(err){
       res.json({
         status:'1',
         msg:err.message
       })
     }else{
-      Admin.update({
-        'name':req.body.name
-      },{
-        $set:{
-          'state':'1',
-          'delete_time':Date.now()
-        }
-      },(err,docs)=>{
-        if(err){
-          res.json({
-            status:'1',
-            msg:err.message
-          })
-        }else{
-          res.json({
-            status:'0',
-            msg:'管理员已经禁用'
-          })
-        }
+      res.json({
+        status:'0',
+        msg:'管理员已经禁用'
       })
     }
   })
@@ -355,33 +318,22 @@ router.post('/AdminDelete',(req,res,next)=>{
 
 //解禁管理员
 router.post('/undeleteadmin',(req,res,next)=>{
-  Admin.findOne({
+  Admin.update({
     'name':req.body.name
-  },(err,doc)=>{
+  },{
+    $set:{
+      'state':'0',
+    }
+  },(err,docs)=>{
     if(err){
       res.json({
         status:'1',
         msg:err.message
       })
     }else{
-      Admin.update({
-        'name':req.body.name
-      },{
-        $set:{
-          'state':'0',
-        }
-      },(err,docs)=>{
-        if(err){
-          res.json({
-            status:'1',
-            msg:err.message
-          })
-        }else{
-          res.json({
-            status:'0',
-            msg:'管理员已经解禁'
-          })
-        }
+      res.json({
+        status:'0',
+        msg:'管理员已经解禁'
       })
     }
   })
@@ -499,15 +451,6 @@ router.post('/SmsInfoModel',(req,res,next)=>{
       SignName=req.body.SignName,
       TemplateCode=req.body.TemplateCode,
       describe=req.body.describe;
-  Sms.find({
-    '_id':id
-  },(err,doc)=>{
-    if(err){
-      res.json({
-        status:'1',
-        msg:err.message
-      })
-    }else{
       Sms.update({
         '_id':id
       },{
@@ -529,8 +472,6 @@ router.post('/SmsInfoModel',(req,res,next)=>{
           })
         }
       })
-    }
-  })
 })
 
 //禁用短信模板
@@ -617,15 +558,6 @@ router.post('/UpdataAliunAk',(req,res,next)=>{
   let AccessKeyId=req.body.AccessKeyId,
       AccessKeySecret=req.body.AccessKeySecret,
       id=mongoose.Types.ObjectId(req.body.id);
-  Config.find({
-    '_id':id
-  },(err,doc)=>{
-    if(err){
-      res.json({
-        status:'1',
-        msg:err.message
-      })
-    }else{
       Config.update({
         '_id':id
       },{
@@ -646,8 +578,6 @@ router.post('/UpdataAliunAk',(req,res,next)=>{
           })
         }
       })
-    }
-  })
 })
 
 //增加部门信息
@@ -698,15 +628,6 @@ router.post('/infoDepartmation',(req,res,next)=>{
       department_qq=req.body.department_qq,
       department_id=req.body.department_id,
       id=mongoose.Types.ObjectId(req.body.id);
-  Department.findOne({
-    '_id':id
-  },(err,doc)=>{
-    if(err){
-      res.json({
-        status:'1',
-        msg:err.message
-      })
-    }else{
       Department.update({
         '_id':id
       },{
@@ -728,8 +649,6 @@ router.post('/infoDepartmation',(req,res,next)=>{
           })
         }
       })
-    }
-  })
 })
 
 //删除部门信息
@@ -759,15 +678,6 @@ router.post('/UpdateEnrollTime',(req,res,next)=>{
       signdowntime=req.body.signdowntime,
       queryuptime=req.body.queryuptime,
       querydowntime=req.body.querydowntime;
-  Config.find({
-    '_id':id
-  },(err,doc)=>{
-    if(err){
-      res.json({
-        status:'1',
-        msg:err.message
-      })
-    }else{
       Config.update({
         '_id':id
       },{
@@ -791,8 +701,6 @@ router.post('/UpdateEnrollTime',(req,res,next)=>{
           })
         }
       })
-    }
-  })
 })
 
 //查询入口时间监测

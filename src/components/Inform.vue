@@ -1,3 +1,10 @@
+<!--
+ * @Author: johnwang
+ * @since: 2019-05-28 15:37:11
+ * @lastTime: 2019-09-01 21:08:18
+ * @LastAuthor: Do not edit
+ * @Github: https://github.com/tyutjohn
+ -->
 <template>
   <div>
       <el-table
@@ -78,7 +85,7 @@
           :page-sizes="[10,20,50,100]"
           :page-size="100"
           layout="total, sizes, prev, pager, next, jumper"
-          :total="usergetdata.count">
+          :total="usergetdata.length">
         </el-pagination>
       </div>
     <div class="main-bottom">
@@ -153,7 +160,7 @@
         phones:'',//选中手机号
         department_id:'',
         currentPage4:4,//页
-        pageSize:'',//每页的条数
+        pageSize:'10',//每页的条数
         page:'',//选择页数
         judge:false//判断全部还是分类
       };
@@ -225,7 +232,7 @@
           pageSize:this.pageSize
         }).then((res)=>{
           this.usergetdata=res.data.result
-          //console.log(res);
+          console.log(res);
         }).catch((response)=>{
           console.log(response);
         })
