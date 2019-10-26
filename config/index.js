@@ -1,3 +1,10 @@
+/*
+ * @Author: johnwang
+ * @since: 2019-05-20 12:08:01
+ * @lastTime: 2019-10-23 10:40:51
+ * @LastAuthor: Do not edit
+ * @Github: https://github.com/tyutjohn
+ */
 'use strict'
 // Template version: 1.3.1
 // see http://vuejs-templates.github.io/webpack for documentation.
@@ -15,6 +22,9 @@ module.exports = {
         target:'http://localhost:3000'
       },
       '/admin/**':{
+        target:'http://localhost:3000'
+      },
+      '/config/**':{
         target:'http://localhost:3000'
       }
     },

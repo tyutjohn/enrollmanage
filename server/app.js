@@ -1,7 +1,7 @@
 /*
  * @Author: johnwang
  * @since: 2019-05-20 22:55:42
- * @lastTime: 2019-08-31 22:49:52
+ * @lastTime: 2019-10-26 20:58:57
  * @LastAuthor: Do not edit
  * @Github: https://github.com/tyutjohn
  */
@@ -34,7 +34,7 @@ app.use((req,res,next)=>{
   if(req.cookies.username){
     next();
   }else{
-    if(req.originalUrl=='/admin/login'|| req.originalUrl=='/users/Rcode'|| req.originalUrl=='/users/apply'||req.originalUrl=='/admin/QueryTime'||req.originalUrl=='/users/userfind'||req.originalUrl=='/users/departments'||req.originalUrl=='/users/CheckRcode'||req.originalUrl=='/admin/ReportTime'||req.originalUrl=='/users/test'){
+    if(req.originalUrl=='/admin/login'|| req.originalUrl=='/users/Rcode'|| req.originalUrl=='/users/apply'||req.originalUrl=='/admin/QueryTime'||req.originalUrl=='/users/userfind'||req.originalUrl=='/users/departments'||req.originalUrl=='/users/CheckRcode'||req.originalUrl=='/admin/ReportTime'||req.originalUrl=='/admin/InitSupAdmin'){
       next();
     }else{
       res.json({

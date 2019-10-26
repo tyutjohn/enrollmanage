@@ -1,30 +1,18 @@
 /*
  * @Author: johnwang
  * @since: 2019-05-21 10:22:54
- * @lastTime: 2019-09-01 21:19:35
+ * @lastTime: 2019-10-26 21:06:11
  * @LastAuthor: Do not edit
  * @Github: https://github.com/tyutjohn
  */
 const express = require('express');
 const router = express.Router();
-const mongoose = require('mongoose');
+const mongoose = require('../util/mongodb');
 const Users = require('../models/users');
 const Department = require('../models/department');
 const Configs = require('../models/config');
 const redis=require('../util/redis');
 const svgCaptcha = require('svg-captcha')
-
-//连接数据库
-mongoose.set('useCreateIndex',true);
-mongoose.connect('mongodb://127.0.0.1:27017/enroll');
-
-mongoose.connection.on('connected', function () {
-  console.log('Mongodb connected success')
-})
-
-mongoose.connection.on('disconnected', function () {
-  console.log("MonogDb connected disconnected")
-});
 
 //阿里云短信
 const SMSClient = require('@alicloud/sms-sdk')
@@ -1048,28 +1036,6 @@ router.get('/DepartNum',(req,res,next)=>{
       })
     }
   })
-})
-
-
-//test
-router.post('/test', (req, res, next) => {
-  //聚合管道查询单人信息
-    // var id=mongoose.Types.ObjectId(req.body.id);
-    // Users.aggregate([{$lookup:{
-    //   from:'departments',
-    //   localField:'department',
-    //   foreignField:'department_id',
-    //   as:'item'
-    // }},{
-    //   $match:{
-    //     '_id':id
-    //   }
-    // }],(err,doc)=>{
-    //   res.json({
-    //     status:'0',
-    //     msg:doc
-    //   })
-    // })
 })
 
 

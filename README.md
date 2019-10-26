@@ -1,3 +1,10 @@
+<!--
+ * @Author: johnwang
+ * @since: 2019-05-20 11:27:42
+ * @lastTime: 2019-10-26 21:15:30
+ * @LastAuthor: Do not edit
+ * @Github: https://github.com/tyutjohn
+ -->
 # enrollmanage
 > [项目地址](https://www.tyutjohn.com)
 > 招新报名管理系统(太原理工大学易班发展中心定制化)
@@ -55,8 +62,7 @@ npm test
 # install redis,mongodb
 sudo apt-get install redis-server mongodb
 
-# create mongodb database
-建立enroll数据库，运行数据库表
+
 ```
 2. 运行node后台
 ```
@@ -149,6 +155,19 @@ cnpm run build
 
 # 部署至nginx服务器
 mv dist/ /var/www/html/yiban/
+```
+
+5.安装程序
+```
+# 初始化程序
+访问 域名/#/Install   //按照提示进行初始化安装
+
+# 删除Install模块
+1、安装完成并创建超级管理员账号后,在程序前台目录 /src/components/下找到Install.vue并且删除
+2、在程序前台目录 /src/router/index.js 下第23行删除 import Install from '@/components/Install',第113至117 },{path:'/install',name:'Install',component:Install 删除
+3、重新打包前台文件并部署
+cnpm run build
+
 ```
 
 # 关于作者

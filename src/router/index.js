@@ -1,3 +1,10 @@
+/*
+ * @Author: johnwang
+ * @since: 2019-05-20 12:08:01
+ * @lastTime: 2019-10-18 08:27:43
+ * @LastAuthor: Do not edit
+ * @Github: https://github.com/tyutjohn
+ */
 import Vue from 'vue'
 import Router from 'vue-router'
 import Home from '@/components/Home'
@@ -13,6 +20,7 @@ import Repoat from '@/components/Repoat'
 import Queryinfor from '@/components/Queryinfor'
 import Datavisual from '@/components/Datavisual'
 import Error404 from '@/components/Error404'
+import Install from '@/components/Install'
 import { verifyToken } from '../../server/util/token';
 
 Vue.use(Router)
@@ -102,6 +110,10 @@ const routes=[
       path:'/404',
       name:'Error404',
       component:Error404
+    },{
+      path:'/install',
+      name:'Install',
+      component:Install
     },{
       path: "*", // 此处需特别注意置于最底部
       redirect: "/404"
