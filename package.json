@@ -15,7 +15,7 @@
   "dependencies": {
     "@alicloud/pop-core": "^1.7.7",
     "@alicloud/sms-sdk": "^1.1.6",
-    "axios": "^0.18.1",
+    "axios": "^0.21.1",
     "babel-plugin-component": "^1.1.1",
     "body-parser": "^1.19.0",
     "cookie-parser": "^1.4.4",
